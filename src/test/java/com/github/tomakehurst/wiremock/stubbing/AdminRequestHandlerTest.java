@@ -66,7 +66,7 @@ public class AdminRequestHandlerTest {
                 .build();
 
         context.checking(new Expectations() {{
-            one(admin).saveMappings();
+            one(admin).saveMappings("");
         }});
 
         handler.handle(request, httpResponder);

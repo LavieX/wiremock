@@ -96,13 +96,13 @@ public class ProxyAcceptanceTest {
 	public void successfullyGetsResponseFromOtherServiceViaProxy() {
         initWithDefaultConfig();
 
-		targetServiceAdmin.register(get(urlEqualTo("/proxied/resource?param=value"))
+		targetServiceAdmin.register("",get(urlEqualTo("/proxied/resource?param=value"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "text/plain")
                         .withBody("Proxied content")));
 
-        proxyingServiceAdmin.register(any(urlEqualTo("/proxied/resource?param=value")).atPriority(10)
+        proxyingServiceAdmin.register("",any(urlEqualTo("/proxied/resource?param=value")).atPriority(10)
 				.willReturn(aResponse()
 				.proxiedFrom(targetServiceBaseUrl)));
 		
@@ -116,7 +116,7 @@ public class ProxyAcceptanceTest {
 	public void successfullyGetsResponseFromOtherServiceViaProxyWhenInjectingAddtionalRequestHeaders() {
         initWithDefaultConfig();
 
-        proxyingServiceAdmin.register(any(urlEqualTo("/additional/headers")).atPriority(10)
+        proxyingServiceAdmin.register("",any(urlEqualTo("/additional/headers")).atPriority(10)
 				.willReturn(aResponse()
 				.proxiedFrom(targetServiceBaseUrl)
                         .withAdditionalRequestHeader("a", "b")
@@ -133,13 +133,13 @@ public class ProxyAcceptanceTest {
 	public void successfullyGetsResponseFromOtherServiceViaProxyInjectingHeadersOverridingSentHeaders() {
         initWithDefaultConfig();
 
-		targetServiceAdmin.register(get(urlEqualTo("/proxied/resource?param=value"))
+		targetServiceAdmin.register("",get(urlEqualTo("/proxied/resource?param=value"))
 				.withHeader("a", equalTo("b"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withBody("Proxied content")));
 
-        proxyingServiceAdmin.register(any(urlEqualTo("/proxied/resource?param=value")).atPriority(10)
+        proxyingServiceAdmin.register("",any(urlEqualTo("/proxied/resource?param=value")).atPriority(10)
 				.willReturn(aResponse()
 				.proxiedFrom(targetServiceBaseUrl)
 				.withAdditionalRequestHeader("a", "b")));
@@ -154,11 +154,11 @@ public class ProxyAcceptanceTest {
 	public void successfullyPostsResponseToOtherServiceViaProxy() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(post(urlEqualTo("/proxied/resource"))
+        targetServiceAdmin.register("",post(urlEqualTo("/proxied/resource"))
                 .willReturn(aResponse()
                         .withStatus(204)));
 
-        proxyingServiceAdmin.register(any(urlEqualTo("/proxied/resource")).atPriority(10)
+        proxyingServiceAdmin.register("",any(urlEqualTo("/proxied/resource")).atPriority(10)
 				.willReturn(aResponse()
 				.proxiedFrom(targetServiceBaseUrl)));
 		
@@ -172,11 +172,11 @@ public class ProxyAcceptanceTest {
 	public void successfullyGetsResponseFromOtherServiceViaProxyWithEscapeCharsInUrl() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(get(urlEqualTo("/%26%26The%20Lord%20of%20the%20Rings%26%26"))
+        targetServiceAdmin.register("",get(urlEqualTo("/%26%26The%20Lord%20of%20the%20Rings%26%26"))
                 .willReturn(aResponse()
                         .withStatus(200)));
 
-        proxyingServiceAdmin.register(any(urlEqualTo("/%26%26The%20Lord%20of%20the%20Rings%26%26")).atPriority(10)
+        proxyingServiceAdmin.register("",any(urlEqualTo("/%26%26The%20Lord%20of%20the%20Rings%26%26")).atPriority(10)
                 .willReturn(aResponse()
                         .proxiedFrom(targetServiceBaseUrl)));
 		
@@ -213,7 +213,7 @@ public class ProxyAcceptanceTest {
 		});
 		server.start();
 		
-        proxyingServiceAdmin.register(post(urlEqualTo("/binary")).willReturn(aResponse().proxiedFrom("http://localhost:" + server.getAddress().getPort()).withBody(bytes)));
+        proxyingServiceAdmin.register("",post(urlEqualTo("/binary")).willReturn(aResponse().proxiedFrom("http://localhost:" + server.getAddress().getPort()).withBody(bytes)));
         
         WireMockResponse post = testClient.post("/binary", new ByteArrayEntity(bytes));
 		assertThat(post.statusCode(), is(200));
@@ -224,8 +224,8 @@ public class ProxyAcceptanceTest {
     public void sendsContentLengthHeaderWhenPostingIfPresentInOriginalRequest() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(post(urlEqualTo("/with/length")).willReturn(aResponse().withStatus(201)));
-        proxyingServiceAdmin.register(post(urlEqualTo("/with/length")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",post(urlEqualTo("/with/length")).willReturn(aResponse().withStatus(201)));
+        proxyingServiceAdmin.register("",post(urlEqualTo("/with/length")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         testClient.postWithBody("/with/length", "TEST", "application/x-www-form-urlencoded", "utf-8");
 
@@ -236,8 +236,8 @@ public class ProxyAcceptanceTest {
     public void sendsTransferEncodingChunkedWhenPostingIfPresentInOriginalRequest() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(post(urlEqualTo("/chunked")).willReturn(aResponse().withStatus(201)));
-        proxyingServiceAdmin.register(post(urlEqualTo("/chunked")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",post(urlEqualTo("/chunked")).willReturn(aResponse().withStatus(201)));
+        proxyingServiceAdmin.register("",post(urlEqualTo("/chunked")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         testClient.postWithChunkedBody("/chunked", "TEST".getBytes());
 
@@ -249,8 +249,8 @@ public class ProxyAcceptanceTest {
     public void preservesHostHeaderWhenSpecified() {
         init(wireMockConfig().preserveHostHeader(true));
 
-        targetServiceAdmin.register(get(urlEqualTo("/preserve-host-header")).willReturn(aResponse().withStatus(200)));
-        proxyingServiceAdmin.register(get(urlEqualTo("/preserve-host-header")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",get(urlEqualTo("/preserve-host-header")).willReturn(aResponse().withStatus(200)));
+        proxyingServiceAdmin.register("",get(urlEqualTo("/preserve-host-header")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         testClient.get("/preserve-host-header", withHeader("Host", "my.host"));
 
@@ -262,8 +262,8 @@ public class ProxyAcceptanceTest {
     public void usesProxyUrlBasedHostHeaderWhenPreserveHostHeaderNotSpecified() throws Exception {
         init(wireMockConfig().preserveHostHeader(false));
 
-        targetServiceAdmin.register(get(urlEqualTo("/host-header")).willReturn(aResponse().withStatus(200)));
-        proxyingServiceAdmin.register(get(urlEqualTo("/host-header")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",get(urlEqualTo("/host-header")).willReturn(aResponse().withStatus(200)));
+        proxyingServiceAdmin.register("",get(urlEqualTo("/host-header")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         testClient.get("/host-header", withHeader("Host", "my.host"));
 
@@ -275,8 +275,8 @@ public class ProxyAcceptanceTest {
     public void proxiesPatchRequestsWithBody() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(patch(urlEqualTo("/patch")).willReturn(aResponse().withStatus(200)));
-        proxyingServiceAdmin.register(patch(urlEqualTo("/patch")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",patch(urlEqualTo("/patch")).willReturn(aResponse().withStatus(200)));
+        proxyingServiceAdmin.register("",patch(urlEqualTo("/patch")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         testClient.patchWithBody("/patch", "Patch body", "text/plain", "utf-8");
 
@@ -287,13 +287,13 @@ public class ProxyAcceptanceTest {
     public void addsSpecifiedHeadersToResponse() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(get(urlEqualTo("/extra/headers"))
+        targetServiceAdmin.register("",get(urlEqualTo("/extra/headers"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "text/plain")
                         .withBody("Proxied content")));
 
-        proxyingServiceAdmin.register(any(urlEqualTo("/extra/headers"))
+        proxyingServiceAdmin.register("",any(urlEqualTo("/extra/headers"))
                 .willReturn(aResponse()
                         .withHeader("X-Additional-Header", "Yep")
                         .proxiedFrom(targetServiceBaseUrl)));
@@ -308,11 +308,11 @@ public class ProxyAcceptanceTest {
     public void doesNotDuplicateCookieHeaders() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(get(urlEqualTo("/duplicate/cookies"))
+        targetServiceAdmin.register("",get(urlEqualTo("/duplicate/cookies"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Set-Cookie", "session=1234")));
-        proxyingServiceAdmin.register(get(urlEqualTo("/duplicate/cookies")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        proxyingServiceAdmin.register("",get(urlEqualTo("/duplicate/cookies")).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         testClient.get("/duplicate/cookies");
         testClient.get("/duplicate/cookies", withHeader("Cookie", "session=1234"));
@@ -378,8 +378,8 @@ public class ProxyAcceptanceTest {
     public void maintainsGZippedRequest() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(post("/gzipped").willReturn(aResponse().withStatus(201)));
-        proxyingServiceAdmin.register(post("/gzipped").willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",post("/gzipped").willReturn(aResponse().withStatus(201)));
+        proxyingServiceAdmin.register("",post("/gzipped").willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         HttpEntity gzippedBody = new GzipCompressingEntity(new StringEntity("gzipped body", TEXT_PLAIN));
         testClient.post("/gzipped", gzippedBody);
@@ -393,8 +393,8 @@ public class ProxyAcceptanceTest {
     public void removesTrailingSlashFromUrlBeforeForwarding() {
         initWithDefaultConfig();
 
-        targetServiceAdmin.register(get("/slashes").willReturn(ok()));
-        proxyingServiceAdmin.register(any(anyUrl()).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",get("/slashes").willReturn(ok()));
+        proxyingServiceAdmin.register("",any(anyUrl()).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
 
         WireMockResponse response = testClient.get("/slashes/");
         assertThat(response.statusCode(), is(200));
@@ -403,7 +403,7 @@ public class ProxyAcceptanceTest {
     }
 
     private void register200StubOnProxyAndTarget(String url) {
-        targetServiceAdmin.register(get(urlEqualTo(url)).willReturn(aResponse().withStatus(200)));
-        proxyingServiceAdmin.register(get(urlEqualTo(url)).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
+        targetServiceAdmin.register("",get(urlEqualTo(url)).willReturn(aResponse().withStatus(200)));
+        proxyingServiceAdmin.register("",get(urlEqualTo(url)).willReturn(aResponse().proxiedFrom(targetServiceBaseUrl)));
     }
 }

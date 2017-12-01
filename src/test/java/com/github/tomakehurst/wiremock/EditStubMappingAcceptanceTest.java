@@ -32,14 +32,14 @@ public class EditStubMappingAcceptanceTest extends AcceptanceTestBase {
     public void canEditAnExistingStubMapping() {
         UUID id = UUID.randomUUID();
 
-        wireMockServer.stubFor(get(urlEqualTo("/edit-this"))
+        wireMockServer.stubFor("", get(urlEqualTo("/edit-this"))
             .withId(id)
             .willReturn(aResponse()
                 .withBody("Original")));
 
         assertThat(testClient.get("/edit-this").content(), is("Original"));
 
-        wireMockServer.editStub(get(urlEqualTo("/edit-this"))
+        wireMockServer.editStub("", get(urlEqualTo("/edit-this"))
             .withId(id)
             .willReturn(aResponse()
                 .withBody("Modified")));
@@ -47,7 +47,7 @@ public class EditStubMappingAcceptanceTest extends AcceptanceTestBase {
         assertThat(testClient.get("/edit-this").content(), is("Modified"));
 
         int editThisStubCount =
-            from(wireMockServer.listAllStubMappings().getMappings())
+            from(wireMockServer.listAllStubMappings("").getMappings())
             .filter(withUrl("/edit-this"))
             .size();
 

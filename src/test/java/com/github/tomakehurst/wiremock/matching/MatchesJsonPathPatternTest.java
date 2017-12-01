@@ -18,7 +18,6 @@ package com.github.tomakehurst.wiremock.matching;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.Json;
-import com.github.tomakehurst.wiremock.common.JsonException;
 import com.github.tomakehurst.wiremock.common.LocalNotifier;
 import com.github.tomakehurst.wiremock.common.Notifier;
 import org.jmock.Expectations;
@@ -294,7 +293,7 @@ public class MatchesJsonPathPatternTest {
         assertThat(subMatcher.getExpected(), is("the value"));
     }
 
-    @Test(expected = JsonException.class)
+    @Test(expected = JsonMappingException.class)
     public void throwsSensibleErrorOnDeserialisationWhenPatternIsBadlyFormedWithMissingExpression() {
         Json.read(
             "{                                      \n" +
@@ -306,7 +305,7 @@ public class MatchesJsonPathPatternTest {
             StringValuePattern.class);
     }
 
-    @Test(expected = JsonException.class)
+    @Test(expected = JsonMappingException.class)
     public void throwsSensibleErrorOnDeserialisationWhenPatternIsBadlyFormedWithBadValuePatternName() {
         Json.read(
             "{                                      \n" +

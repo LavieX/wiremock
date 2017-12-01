@@ -15,7 +15,9 @@
  */
 package com.github.tomakehurst.wiremock.junit;
 
-import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
+import java.util.List;
+import java.util.UUID;
+
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
@@ -23,19 +25,16 @@ import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import com.github.tomakehurst.wiremock.verification.NearMiss;
 
-import java.util.List;
-import java.util.UUID;
-
 public interface Stubbing {
 
-    StubMapping givenThat(MappingBuilder mappingBuilder);
-    StubMapping stubFor(MappingBuilder mappingBuilder);
-    void editStub(MappingBuilder mappingBuilder);
-    void removeStub(MappingBuilder mappingBuilder);
-    void removeStub(StubMapping mappingBuilder);
+	StubMapping givenThat(String context, MappingBuilder mappingBuilder);
+    StubMapping stubFor(String context, MappingBuilder mappingBuilder);
+    void editStub(String context, MappingBuilder mappingBuilder);
+    void removeStub(String context, MappingBuilder mappingBuilder);
+    void removeStub(String context, StubMapping mappingBuilder);
 
-    List<StubMapping> getStubMappings();
-    StubMapping getSingleStubMapping(UUID id);
+    List<StubMapping> getStubMappings(String context);
+    StubMapping getSingleStubMapping(String context, UUID id);
 
     void verify(RequestPatternBuilder requestPatternBuilder);
     void verify(int count, RequestPatternBuilder requestPatternBuilder);
@@ -48,4 +47,5 @@ public interface Stubbing {
     List<NearMiss> findNearMissesForAllUnmatchedRequests();
     List<NearMiss> findNearMissesFor(LoggedRequest loggedRequest);
     List<NearMiss> findAllNearMissesFor(RequestPatternBuilder requestPatternBuilder);
+	
 }

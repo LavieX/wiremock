@@ -51,7 +51,7 @@ public class ResponseDribbleAcceptanceTest {
 
     @Test
     public void requestIsSuccessfulButTakesLongerThanSocketTimeoutWhenDribbleIsEnabled() throws Exception {
-        stubFor(get("/delayedDribble").willReturn(
+        stubFor("",get("/delayedDribble").willReturn(
                 ok()
                     .withBody(BODY_BYTES)
                     .withChunkedDribbleDelay(BODY_BYTES.length, DOUBLE_THE_SOCKET_TIMEOUT)));
@@ -71,7 +71,7 @@ public class ResponseDribbleAcceptanceTest {
     public void servesAStringBodyInChunks() throws Exception {
         final int TOTAL_TIME = 300;
 
-        stubFor(get("/delayedDribble").willReturn(
+        stubFor("",get("/delayedDribble").willReturn(
             ok()
                 .withBody("Send this in many pieces please!!!")
                 .withChunkedDribbleDelay(2, TOTAL_TIME)));
@@ -88,7 +88,7 @@ public class ResponseDribbleAcceptanceTest {
 
     @Test
     public void requestIsSuccessfulAndBelowSocketTimeoutWhenDribbleIsDisabled() throws Exception {
-        stubFor(get("/nonDelayedDribble").willReturn(
+        stubFor("",get("/nonDelayedDribble").willReturn(
                 ok()
                     .withBody(BODY_BYTES)));
 

@@ -54,14 +54,14 @@ public class CustomMatchingAcceptanceTest {
 
     @Test
     public void inlineRequestMatcherExtension() {
-        wmRule.stubFor(requestMatching(new MyRequestMatcher()).willReturn(aResponse().withStatus(200)));
+        wmRule.stubFor("", requestMatching(new MyRequestMatcher()).willReturn(aResponse().withStatus(200)));
         assertThat(client.get("/correct").statusCode(), is(200));
         assertThat(client.get("/wrong").statusCode(), is(404));
     }
 
     @Test
     public void inlineRequestMatcher() {
-        wmRule.stubFor(requestMatching(new RequestMatcher() {
+        wmRule.stubFor("", requestMatching(new RequestMatcher() {
             @Override
             public MatchResult match(Request request) {
                 return MatchResult.of(request.getUrl().contains("correct"));
@@ -79,7 +79,7 @@ public class CustomMatchingAcceptanceTest {
 
     @Test
     public void requestMatcherAsExtension() {
-        wm.register(requestMatching("path-contains-param", Parameters.one("path", "findthis")).willReturn(aResponse().withStatus(200)));
+        wm.register("", requestMatching("path-contains-param", Parameters.one("path", "findthis")).willReturn(aResponse().withStatus(200)));
         assertThat(client.get("/findthis/thing").statusCode(), is(200));
     }
 

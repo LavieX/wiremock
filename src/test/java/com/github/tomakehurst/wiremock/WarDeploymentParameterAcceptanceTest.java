@@ -46,7 +46,7 @@ public class WarDeploymentParameterAcceptanceTest {
     public void testCustomMapping() throws Exception {
         // Test war deployment using a different servlet mapping path (see webappCustomMapping).
         init("sample-war/src/main/webappCustomMapping", "/mapping");
-        givenThat(get(urlEqualTo("/war/stub")).willReturn(
+        givenThat("",get(urlEqualTo("/war/stub")).willReturn(
                 aResponse().withStatus(HTTP_OK).withBody("War stub OK")));
 
         assertThat(testClient.get("/wiremock/mapping/war/stub").content(), is("War stub OK"));

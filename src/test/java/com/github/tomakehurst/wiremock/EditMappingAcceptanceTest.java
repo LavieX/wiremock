@@ -78,12 +78,12 @@ public class EditMappingAcceptanceTest extends AcceptanceTestBase {
 
 	@Test
 	public void editMappingViaTheDsl() {
-        StubMapping stubMapping = stubFor(get(urlEqualTo("/edit/this"))
+        StubMapping stubMapping = stubFor("", get(urlEqualTo("/edit/this"))
             .willReturn(aResponse().withStatus(200)));
 
         assertThat(testClient.get("/edit/this").statusCode(), is(200));
 
-        editStub(
+        editStub("", 
             get(urlEqualTo("/edit/this"))
                 .withId(stubMapping.getId())
                 .willReturn(aResponse().withStatus(418))

@@ -16,8 +16,6 @@
 package com.github.tomakehurst.wiremock;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import com.github.tomakehurst.wiremock.common.Errors;
-import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.junit.Stubbing;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -45,7 +43,7 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void getAllStubMappings() throws Exception {
-        StubMapping stubMapping = dsl.stubFor(get(urlEqualTo("/my-test-url"))
+        StubMapping stubMapping = dsl.stubFor("", get(urlEqualTo("/my-test-url"))
             .willReturn(aResponse().withStatus(418)));
 
         String body = testClient.get("/__admin/mappings").content();
@@ -76,7 +74,7 @@ public class AdminApiTest extends AcceptanceTestBase {
     @Test
     public void getAllStubMappingsWithLimitedResults() throws Exception {
         for (int i = 1; i <= 20; i++) {
-            dsl.stubFor(get(urlEqualTo("/things/" + i)).willReturn(aResponse().withStatus(418)));
+            dsl.stubFor("", get(urlEqualTo("/things/" + i)).willReturn(aResponse().withStatus(418)));
         }
 
         String allBody = testClient.get("/__admin/mappings").content();
@@ -89,7 +87,7 @@ public class AdminApiTest extends AcceptanceTestBase {
     @Test
     public void getAllStubMappingsWithLimitedAndOffsetResults() throws Exception {
         for (int i = 1; i <= 20; i++) {
-            dsl.stubFor(get(urlEqualTo("/things/" + i)).willReturn(aResponse().withStatus(418)));
+            dsl.stubFor("", get(urlEqualTo("/things/" + i)).willReturn(aResponse().withStatus(418)));
         }
 
         String limitedBody = testClient.get("/__admin/mappings?limit=4&offset=3").content();
@@ -103,7 +101,7 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void deprecatedGetAllStubMappings() throws Exception {
-        dsl.stubFor(get(urlEqualTo("/my-test-url")).willReturn(aResponse().withStatus(418)));
+        dsl.stubFor("", get(urlEqualTo("/my-test-url")).willReturn(aResponse().withStatus(418)));
 
         String body = testClient.get("/__admin/").content();
         System.out.println(body);
@@ -128,7 +126,7 @@ public class AdminApiTest extends AcceptanceTestBase {
     public void getStubMappingById() throws Exception {
         UUID id = UUID.randomUUID();
 
-        dsl.stubFor(trace(urlEqualTo("/my-addressable-stub"))
+        dsl.stubFor("", trace(urlEqualTo("/my-addressable-stub"))
             .withId(id)
             .willReturn(aResponse().withStatus(451))
         );
@@ -154,7 +152,7 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void getLoggedRequests() throws Exception {
-        dsl.stubFor(get(urlPathEqualTo("/received-request/4")).willReturn(aResponse()));
+        dsl.stubFor("", get(urlPathEqualTo("/received-request/4")).willReturn(aResponse()));
 
         for (int i = 1; i <= 5; i++) {
             testClient.get("/received-request/" + i);
@@ -173,7 +171,7 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void getLoggedRequestsWithLimit() throws Exception {
-        dsl.stubFor(get(urlPathEqualTo("/received-request/7"))
+        dsl.stubFor("", get(urlPathEqualTo("/received-request/7"))
             .willReturn(aResponse().withStatus(200).withBody("This was matched")));
 
         for (int i = 1; i <= 7; i++) {
@@ -244,7 +242,7 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void deleteStubMappingById() throws Exception {
-        StubMapping stubMapping = dsl.stubFor(get(urlPathEqualTo("/delete/this"))
+        StubMapping stubMapping = dsl.stubFor("", get(urlPathEqualTo("/delete/this"))
             .willReturn(aResponse().withStatus(200))
         );
 
@@ -263,7 +261,7 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void editStubMappingById() throws Exception {
-        StubMapping stubMapping = dsl.stubFor(get(urlPathEqualTo("/put/this"))
+        StubMapping stubMapping = dsl.stubFor("", get(urlPathEqualTo("/put/this"))
             .willReturn(aResponse().withStatus(200))
         );
 
@@ -321,8 +319,8 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void resetStubMappingsViaDELETE() {
-        dsl.stubFor(get(urlEqualTo("/reset-this")).willReturn(aResponse().withStatus(200)));
-        dsl.stubFor(get(urlEqualTo("/reset-this/too")).willReturn(aResponse().withStatus(200)));
+        dsl.stubFor("", get(urlEqualTo("/reset-this")).willReturn(aResponse().withStatus(200)));
+        dsl.stubFor("", get(urlEqualTo("/reset-this/too")).willReturn(aResponse().withStatus(200)));
 
         assertThat(testClient.get("/reset-this").statusCode(), is(200));
         assertThat(testClient.get("/reset-this/too").statusCode(), is(200));
@@ -352,13 +350,13 @@ public class AdminApiTest extends AcceptanceTestBase {
 
     @Test
     public void resetScenariosViaPOST() {
-        dsl.stubFor(get(urlEqualTo("/stateful"))
+        dsl.stubFor("", get(urlEqualTo("/stateful"))
             .inScenario("changing-states")
             .whenScenarioStateIs(STARTED)
             .willSetStateTo("final")
             .willReturn(aResponse().withBody("Initial")));
 
-        dsl.stubFor(get(urlEqualTo("/stateful"))
+        dsl.stubFor("", get(urlEqualTo("/stateful"))
             .inScenario("changing-states")
             .whenScenarioStateIs("final")
             .willReturn(aResponse().withBody("Final")));
@@ -384,136 +382,6 @@ public class AdminApiTest extends AcceptanceTestBase {
         JsonAssertion.assertThat(body).field("response").field("status").isEqualTo(200);
 
         assertThat(testClient.get("/").statusCode(), is(200));
-    }
-
-    @Test
-    public void returnsBadEntityStatusWhenInvalidRegexUsedInUrl() {
-        WireMockResponse response = testClient.postJson("/__admin/mappings",
-            "{                                      \n" +
-            "    \"request\": {                            \n" +
-            "        \"urlPattern\": \"/@$&%*[[^^£$&%\"    \n" +
-            "    }                                         \n" +
-            "}");
-
-        assertThat(response.statusCode(), is(422));
-
-        Errors errors = Json.read(response.content(), Errors.class);
-        assertThat(errors.first().getDetail(), is("Unclosed character class near index 13\n" +
-            "/@$&%*[[^^£$&%\n" +
-            "             ^"));
-        assertThat(errors.first().getSource().getPointer(), is("/request"));
-    }
-
-    @Test
-    public void returnsBadEntityStatusWhenInvalidRegexUsedInHeader() {
-        WireMockResponse response = testClient.postJson("/__admin/mappings",
-            "{\n" +
-                "    \"request\": {\n" +
-                "        \"headers\": {\n" +
-                "            \"Accept\": {\n" +
-                "                \"matches\": \"%[[json[[\"\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}");
-
-        assertThat(response.statusCode(), is(422));
-
-        Errors errors = Json.read(response.content(), Errors.class);
-        assertThat(errors.first().getDetail(), is("Unclosed character class near index 8\n" +
-            "%[[json[[\n" +
-            "        ^"));
-        assertThat(errors.first().getSource().getPointer(), is("/request/headers/Accept"));
-    }
-
-    @Test
-    public void returnsBadEntityStatusWhenInvalidRegexUsedInBodyPattern() {
-        WireMockResponse response = testClient.postJson("/__admin/mappings",
-            "{\n" +
-                "    \"request\": {\n" +
-                "        \"bodyPatterns\": [\n" +
-                "            {\n" +
-                "                \"equalTo\": \"fine\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"matches\": \"somebad]]][[stuff\"\n" +
-                "            }\n" +
-                "        ]\n" +
-                "    }\n" +
-                "}");
-
-        assertThat(response.statusCode(), is(422));
-
-        Errors errors = Json.read(response.content(), Errors.class);
-        assertThat(errors.first().getSource().getPointer(), is("/request/bodyPatterns/1"));
-        assertThat(errors.first().getTitle(), is("Error parsing JSON"));
-        assertThat(errors.first().getDetail(), is("Unclosed character class near index 16\n" +
-            "somebad]]][[stuff\n" +
-            "                ^"));
-    }
-
-    @Test
-    public void returnsBadEntityStatusWhenInvalidMatchOperator() {
-        WireMockResponse response = testClient.postJson("/__admin/mappings",
-            "{\n" +
-                "    \"request\": {\n" +
-                "        \"bodyPatterns\": [\n" +
-                "            {\n" +
-                "                \"matching\": \"somebad]]][[stuff\"\n" +
-                "            }\n" +
-                "        ]\n" +
-                "    }\n" +
-                "}");
-
-        assertThat(response.statusCode(), is(422));
-
-        Errors errors = Json.read(response.content(), Errors.class);
-        assertThat(errors.first().getSource().getPointer(), is("/request/bodyPatterns/0"));
-        assertThat(errors.first().getDetail(), is("{\"matching\":\"somebad]]][[stuff\"} is not a valid match operation"));
-    }
-
-    @Test
-    public void returnsBadEntityStatusWhenInvalidMatchOperatorManyBodyPatterns() {
-        WireMockResponse response = testClient.postJson("/__admin/mappings",
-            "{\n" +
-                "    \"request\": {\n" +
-                "        \"bodyPatterns\": [\n" +
-                "            {\n" +
-                "                \"equalTo\": \"fine\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"matching\": \"somebad]]][[stuff\"\n" +
-                "            }\n" +
-                "        ]\n" +
-                "    }\n" +
-                "}");
-
-        assertThat(response.statusCode(), is(422));
-
-        Errors errors = Json.read(response.content(), Errors.class);
-        assertThat(errors.first().getSource().getPointer(), is("/request/bodyPatterns/1"));
-        assertThat(errors.first().getDetail(), is("{\"matching\":\"somebad]]][[stuff\"} is not a valid match operation"));
-    }
-
-    @Test
-    public void returnsBadEntityStatusOnEqualToJsonOperand() {
-        WireMockResponse response = testClient.postJson("/__admin/mappings",
-            "{\n" +
-                "    \"request\": {\n" +
-                "        \"bodyPatterns\": [\n" +
-                "            {\n" +
-                "                \"equalToJson\": \"(wrong)\"\n" +
-                "            }\n" +
-                "        ]\n" +
-                "    }\n" +
-                "}");
-
-        assertThat(response.statusCode(), is(422));
-
-        Errors errors = Json.read(response.content(), Errors.class);
-        assertThat(errors.first().getSource().getPointer(), is("/request/bodyPatterns/0"));
-        assertThat(errors.first().getDetail(), is("Unexpected character ('(' (code 40)): expected a valid value (number, String, array, object, 'true', 'false' or 'null')\n" +
-            " at [Source: (wrong); line: 1, column: 2]"));
     }
 
     @Test

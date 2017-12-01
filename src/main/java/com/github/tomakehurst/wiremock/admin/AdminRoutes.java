@@ -32,6 +32,8 @@ import static com.github.tomakehurst.wiremock.http.RequestMethod.*;
 import static com.google.common.collect.Iterables.tryFind;
 
 public class AdminRoutes {
+	
+	public static final String CONTEXT_PATHPARAM = "context";
 
     private final ImmutableBiMap<RequestSpec, AdminTask> routes;
     private final Iterable<AdminApiExtension> apiExtensions;
@@ -54,50 +56,53 @@ public class AdminRoutes {
     }
 
     private void initDefaultRoutes(Router router) {
-        router.add(GET,  "/", RootTask.class);
-        router.add(GET,  "", RootRedirectTask.class);
-        router.add(POST, "/reset", ResetTask.class);
+    	
+    		router.add(POST, "/context", CreateContextTask.class);
+    	
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/", RootTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}", RootRedirectTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/reset", ResetTask.class);
 
-        router.add(GET,  "/mappings", GetAllStubMappingsTask.class);
-        router.add(POST, "/mappings", CreateStubMappingTask.class);
-        router.add(DELETE, "/mappings", ResetStubMappingsTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/mappings", GetAllStubMappingsTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/mappings", CreateStubMappingTask.class);
+        router.add(DELETE, "/{" + CONTEXT_PATHPARAM + "}/mappings", ResetStubMappingsTask.class);
 
-        router.add(POST, "/mappings/new", OldCreateStubMappingTask.class); // Deprecated
-        router.add(POST, "/mappings/remove", OldRemoveStubMappingTask.class);  // Deprecated
-        router.add(POST, "/mappings/edit", OldEditStubMappingTask.class);  // Deprecated
-        router.add(POST, "/mappings/save", SaveMappingsTask.class);
-        router.add(POST, "/mappings/reset", ResetToDefaultMappingsTask.class);
-        router.add(GET,  "/mappings/{id}", GetStubMappingTask.class);
-        router.add(PUT,  "/mappings/{id}", EditStubMappingTask.class);
-        router.add(DELETE, "/mappings/{id}", RemoveStubMappingTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/mappings/new", OldCreateStubMappingTask.class); // Deprecated
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/mappings/remove", OldRemoveStubMappingTask.class);  // Deprecated
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/mappings/edit", OldEditStubMappingTask.class);  // Deprecated
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/mappings/save", SaveMappingsTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/mappings/reset", ResetToDefaultMappingsTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/mappings/{id}", GetStubMappingTask.class);
+        router.add(PUT,  "/{" + CONTEXT_PATHPARAM + "}/mappings/{id}", EditStubMappingTask.class);
+        router.add(DELETE, "/{" + CONTEXT_PATHPARAM + "}/mappings/{id}", RemoveStubMappingTask.class);
 
-        router.add(GET, "/scenarios", GetAllScenariosTask.class);
-        router.add(POST, "/scenarios/reset", ResetScenariosTask.class);
+        router.add(GET, "/{" + CONTEXT_PATHPARAM + "}/scenarios", GetAllScenariosTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/scenarios/reset", ResetScenariosTask.class);
 
-        router.add(GET,  "/requests", GetAllRequestsTask.class);
-        router.add(DELETE,  "/requests", ResetRequestsTask.class);
-        router.add(POST, "/requests/reset", OldResetRequestsTask.class);  // Deprecated
-        router.add(POST, "/requests/count", GetRequestCountTask.class);
-        router.add(POST, "/requests/find", FindRequestsTask.class);
-        router.add(GET,  "/requests/unmatched", FindUnmatchedRequestsTask.class);
-        router.add(GET,  "/requests/unmatched/near-misses", FindNearMissesForUnmatchedTask.class);
-        router.add(GET,  "/requests/{id}", GetServedStubTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/requests", GetAllRequestsTask.class);
+        router.add(DELETE,  "/{" + CONTEXT_PATHPARAM + "}/requests", ResetRequestsTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/requests/reset", OldResetRequestsTask.class);  // Deprecated
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/requests/count", GetRequestCountTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/requests/find", FindRequestsTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/requests/unmatched", FindUnmatchedRequestsTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/requests/unmatched/near-misses", FindNearMissesForUnmatchedTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/requests/{id}", GetServedStubTask.class);
 
-        router.add(POST, "/recordings/snapshot", SnapshotTask.class);
-        router.add(POST, "/recordings/start", StartRecordingTask.class);
-        router.add(POST, "/recordings/stop", StopRecordingTask.class);
-        router.add(GET,  "/recordings/status", GetRecordingStatusTask.class);
-        router.add(GET,  "/recorder", GetRecordingsIndexTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/recordings/snapshot", SnapshotTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/recordings/start", StartRecordingTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/recordings/stop", StopRecordingTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/recordings/status", GetRecordingStatusTask.class);
+        router.add(GET,  "/{" + CONTEXT_PATHPARAM + "}/recorder", GetRecordingsIndexTask.class);
 
-        router.add(POST, "/near-misses/request", FindNearMissesForRequestTask.class);
-        router.add(POST, "/near-misses/request-pattern", FindNearMissesForRequestPatternTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/near-misses/request", FindNearMissesForRequestTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/near-misses/request-pattern", FindNearMissesForRequestPatternTask.class);
 
-        router.add(POST, "/settings", GlobalSettingsUpdateTask.class);
-        router.add(POST, "/shutdown", ShutdownServerTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/settings", GlobalSettingsUpdateTask.class);
+        router.add(POST, "/{" + CONTEXT_PATHPARAM + "}/shutdown", ShutdownServerTask.class);
 
-        router.add(GET, "/docs/raml", GetRamlSpecTask.class);
-        router.add(GET, "/docs/swagger", GetSwaggerSpecTask.class);
-        router.add(GET, "/docs", GetDocIndexTask.class);
+        router.add(GET, "/{" + CONTEXT_PATHPARAM + "}/docs/raml", GetRamlSpecTask.class);
+        router.add(GET, "/{" + CONTEXT_PATHPARAM + "}/docs/swagger", GetSwaggerSpecTask.class);
+        router.add(GET, "/{" + CONTEXT_PATHPARAM + "}/docs", GetDocIndexTask.class);
     }
 
     protected void initAdditionalRoutes(Router routeBuilder) {

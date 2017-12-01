@@ -22,13 +22,15 @@ import com.github.tomakehurst.wiremock.core.Admin;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 
+import static com.github.tomakehurst.wiremock.admin.AdminRoutes.CONTEXT_PATHPARAM;
+
 import java.util.UUID;
 
 public class RemoveStubMappingTask implements AdminTask {
 
     @Override
     public ResponseDefinition execute(Admin admin, Request request, PathParams pathParams) {
-        SingleStubMappingResult stubMappingResult = admin.getStubMapping(
+        SingleStubMappingResult stubMappingResult = admin.getStubMapping(pathParams.get(CONTEXT_PATHPARAM),
             UUID.fromString(pathParams.get("id"))
         );
 
@@ -36,7 +38,7 @@ public class RemoveStubMappingTask implements AdminTask {
             return ResponseDefinition.notFound();
         }
 
-        admin.removeStubMapping(stubMappingResult.getItem());
+        admin.removeStubMapping(pathParams.get(CONTEXT_PATHPARAM),stubMappingResult.getItem());
         return ResponseDefinition.okEmptyJson();
     }
 }

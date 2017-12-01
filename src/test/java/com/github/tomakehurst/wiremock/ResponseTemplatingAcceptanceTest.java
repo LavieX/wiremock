@@ -49,7 +49,7 @@ public class ResponseTemplatingAcceptanceTest {
 
         @Test
         public void appliesResponseTemplateWhenAddedToStubMapping() {
-            wm.stubFor(get(urlPathEqualTo("/templated"))
+            wm.stubFor("",get(urlPathEqualTo("/templated"))
                 .willReturn(aResponse()
                     .withBody("{{request.path.[0]}}")
                     .withTransformers("response-template")));
@@ -59,7 +59,7 @@ public class ResponseTemplatingAcceptanceTest {
 
         @Test
         public void doesNotApplyResponseTemplateWhenNotAddedToStubMapping() {
-            wm.stubFor(get(urlPathEqualTo("/not-templated"))
+            wm.stubFor("",get(urlPathEqualTo("/not-templated"))
                 .willReturn(aResponse()
                     .withBody("{{request.path.[0]}}")));
 
@@ -84,7 +84,7 @@ public class ResponseTemplatingAcceptanceTest {
 
         @Test
         public void appliesResponseTemplate() {
-            wm.stubFor(get(urlPathEqualTo("/templated"))
+            wm.stubFor("",get(urlPathEqualTo("/templated"))
                 .willReturn(aResponse()
                     .withBody("{{request.path.[0]}}")));
 
@@ -93,7 +93,7 @@ public class ResponseTemplatingAcceptanceTest {
 
         @Test
         public void appliesToResponseBodyFromFile() {
-            wm.stubFor(get(urlPathEqualTo("/templated"))
+            wm.stubFor("",get(urlPathEqualTo("/templated"))
                 .willReturn(aResponse()
                     .withBodyFile("templated-example.txt")));
 

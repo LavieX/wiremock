@@ -70,7 +70,7 @@ public class PostServeActionExtensionTest {
             .dynamicPort()
             .extensions(new NamedCounterAction()));
 
-        wm.stubFor(get(urlPathEqualTo("/count-me"))
+        wm.stubFor("", get(urlPathEqualTo("/count-me"))
             .withPostServeAction("count-request",
                 counterNameParameter()
                     .withName("things")
@@ -91,7 +91,7 @@ public class PostServeActionExtensionTest {
     public void continuesWithNoEffectIfANonExistentActionIsReferenced() {
         initWithOptions(options().dynamicPort());
 
-        wm.stubFor(get(urlPathEqualTo("/as-normal"))
+        wm.stubFor("", get(urlPathEqualTo("/as-normal"))
             .withPostServeAction("does-not-exist",
                 counterNameParameter()
                     .withName("things")
@@ -119,7 +119,7 @@ public class PostServeActionExtensionTest {
             }
         }));
 
-        wm.stubFor(get(urlPathEqualTo("/response-status"))
+        wm.stubFor("", get(urlPathEqualTo("/response-status"))
             .willReturn(aResponse()
                 .withStatus(418))
         );

@@ -16,24 +16,25 @@
 package com.github.tomakehurst.wiremock.stubbing;
 
 
+import java.util.List;
+import java.util.UUID;
+
 import com.github.tomakehurst.wiremock.http.Request;
 import com.google.common.base.Optional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public interface StubMappings {
 
 	ServeEvent serveFor(Request request);
-	void addMapping(StubMapping mapping);
-	void removeMapping(StubMapping mapping);
-	void editMapping(StubMapping stubMapping);
+	void addMapping(String context, StubMapping mapping);
+	void removeMapping(String context, StubMapping mapping);
+	void editMapping(String context, StubMapping stubMapping);
 	void reset();
 	void resetScenarios();
 
-    List<StubMapping> getAll();
-	Optional<StubMapping> get(UUID id);
+    List<StubMapping> getAll(String context);
 
 	List<Scenario> getAllScenarios();
+	Optional<StubMapping> get(String context, UUID id);
+	
+	
 }

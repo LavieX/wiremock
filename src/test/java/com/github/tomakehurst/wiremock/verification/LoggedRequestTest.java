@@ -118,7 +118,8 @@ public class LoggedRequestTest {
                 true,
                 loggedDate,
                 REQUEST_BODY_AS_BASE64,
-                null
+                null,
+                ""
         );
 
         String expectedJson = String.format(JSON_EXAMPLE, loggedDate.getTime());
@@ -138,7 +139,8 @@ public class LoggedRequestTest {
                 true,
                 null,
                 REQUEST_BODY_AS_BASE64,
-                null
+                null,
+                ""
         );
 
         assertThat(loggedRequest.getBodyAsString(), is(equalTo(REQUEST_BODY)));
@@ -176,7 +178,8 @@ public class LoggedRequestTest {
                 true,
                 new Date(0),
                 null,
-                null);
+                null,
+                "");
 
         Map<String, Object> reqMap = Json.objectToMap(req);
 

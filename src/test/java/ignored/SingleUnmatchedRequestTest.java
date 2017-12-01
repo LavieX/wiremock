@@ -42,7 +42,7 @@ public class SingleUnmatchedRequestTest {
 
     @Test
     public void unmatched() {
-        wm.stubFor(get(urlEqualTo("/hit")).willReturn(aResponse().withStatus(200)));
+        wm.stubFor("", get(urlEqualTo("/hit")).willReturn(aResponse().withStatus(200)));
         client.get("/near-misssss");
     }
 }

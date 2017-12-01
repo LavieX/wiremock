@@ -43,14 +43,14 @@ public class AlternativeServletContainerTest {
 
     @Test
     public void supportsAlternativeHttpServerForBasicStub() {
-        stubFor(get(urlEqualTo("/alt-server")).willReturn(aResponse().withStatus(204)));
+        stubFor("", get(urlEqualTo("/alt-server")).willReturn(aResponse().withStatus(204)));
 
         assertThat(client.get("/alt-server").statusCode(), is(204));
     }
 
     @Test
     public void supportsAlternativeHttpServerForFaultInjection() {
-        stubFor(get(urlEqualTo("/alt-server")).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)));
+        stubFor("", get(urlEqualTo("/alt-server")).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)));
 
         WireMockResponse response = client.get("/alt-server");
 

@@ -178,4 +178,9 @@ public class MockRequest implements Request {
     public LoggedRequest asLoggedRequest() {
         return LoggedRequest.createFrom(this);
     }
+
+	@Override
+	public String getContext() {
+		return "";
+	}
 }

@@ -48,7 +48,7 @@ public class NearMissCalculator {
     }
 
     public List<NearMiss> findNearestTo(final LoggedRequest request) {
-        List<StubMapping> allMappings = stubMappings.getAll();
+        List<StubMapping> allMappings = stubMappings.getAll(request.getContext());
 
         return sortAndTruncate(from(allMappings).transform(new Function<StubMapping, NearMiss>() {
             public NearMiss apply(StubMapping stubMapping) {

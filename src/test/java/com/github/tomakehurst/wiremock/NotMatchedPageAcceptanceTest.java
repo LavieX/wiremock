@@ -50,7 +50,7 @@ public class NotMatchedPageAcceptanceTest {
     public void rendersAPlainTextDiffWhenStubNotMatchedAndANearMissIsAvailable() {
         configure();
 
-        stubFor(post("/thing")
+        stubFor("",post("/thing")
             .withName("The post stub with a really long name that ought to wrap and let us see exactly how that looks when it is done")
             .withHeader("X-My-Header", containing("correct value"))
             .withHeader("Accept", matching("text/plain.*"))
@@ -80,7 +80,7 @@ public class NotMatchedPageAcceptanceTest {
     public void rendersAPlainTextDiffWhenRequestIsOnlyUrlAndMethod() {
         configure();
 
-        stubFor(get("/another-url")
+        stubFor("",get("/another-url")
             .withRequestBody(absent())
             .willReturn(ok()));
 

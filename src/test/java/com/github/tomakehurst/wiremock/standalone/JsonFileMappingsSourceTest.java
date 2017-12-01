@@ -38,7 +38,7 @@ public class JsonFileMappingsSourceTest {
 
 		source.loadMappingsInto(stubMappings);
 
-		List<StubMapping> allMappings = stubMappings.getAll();
+		List<StubMapping> allMappings = stubMappings.getAll("");
 		assertThat(allMappings, hasSize(2));
 
 		List<String> mappingRequestUrls = asList(

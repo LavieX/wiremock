@@ -68,11 +68,11 @@ public class StubMappingPersistenceAcceptanceTest {
 
     @Test
     public void savesAllInMemoryStubMappings() {
-        wm.stubFor(get(urlEqualTo("/1")).willReturn(aResponse().withBody("one")));
-        wm.stubFor(get(urlEqualTo("/2")).willReturn(aResponse().withBody("two")));
-        wm.stubFor(get(urlEqualTo("/3")).willReturn(aResponse().withBody("three")));
+        wm.stubFor("",get(urlEqualTo("/1")).willReturn(aResponse().withBody("one")));
+        wm.stubFor("",get(urlEqualTo("/2")).willReturn(aResponse().withBody("two")));
+        wm.stubFor("",get(urlEqualTo("/3")).willReturn(aResponse().withBody("three")));
 
-        wireMockServer.saveMappings();
+        wireMockServer.saveMappings("");
 
         assertThat(mappingsDir, hasFileContaining("one"));
         assertThat(mappingsDir, hasFileContaining("two"));
@@ -90,14 +90,14 @@ public class StubMappingPersistenceAcceptanceTest {
 
         wireMockServer.resetToDefaultMappings(); // Loads from the file system
 
-        assertThat(wm.getStubMappings().get(0).getId(), is(stubId));
-        assertThat(wm.getStubMappings().get(0).getResponse().getBody(), is("initial"));
+        assertThat(wm.getStubMappings("").get(0).getId(), is(stubId));
+        assertThat(wm.getStubMappings("").get(0).getResponse().getBody(), is("initial"));
 
-        wm.editStub(get(urlEqualTo("/edit"))
+        wm.editStub("",get(urlEqualTo("/edit"))
             .withId(stubId)
             .willReturn(aResponse().withBody("modified")));
 
-        wireMockServer.saveMappings();
+        wireMockServer.saveMappings("");
 
         assertMappingsDirContainsOneFile();
         assertThat(mappingsDir, hasFileContaining("modified"));
@@ -105,20 +105,20 @@ public class StubMappingPersistenceAcceptanceTest {
 
     @Test
     public void savesSingleStubOnCreationIfFlaggedPersistent() {
-        stubFor(get(urlEqualTo("/save-immediately")).persistent());
+        stubFor("",get(urlEqualTo("/save-immediately")).persistent());
         assertThat(mappingsDir, hasFileContaining("/save-immediately"));
     }
 
     @Test
     public void doesNotSaveSingleStubOnCreationIfNotFlaggedPersistent() {
-        stubFor(get(urlEqualTo("/save-immediately")));
+        stubFor("",get(urlEqualTo("/save-immediately")));
         assertMappingsDirIsEmpty();
     }
 
     @Test
     public void savesSingleStubOnEditIfFlaggedPersistent() {
         UUID stubId = UUID.randomUUID();
-        stubFor(get(urlEqualTo("/save-immediately"))
+        stubFor("",get(urlEqualTo("/save-immediately"))
             .persistent()
             .withId(stubId)
             .willReturn(aResponse().withBody("initial"))
@@ -126,7 +126,7 @@ public class StubMappingPersistenceAcceptanceTest {
 
         assertThat(mappingsDir, hasFileContaining("/save-immediately", "initial"));
 
-        editStub(get(urlEqualTo("/save-immediately"))
+        editStub("",get(urlEqualTo("/save-immediately"))
             .persistent()
             .withId(stubId)
             .willReturn(aResponse().withBody("modified"))
@@ -139,12 +139,12 @@ public class StubMappingPersistenceAcceptanceTest {
     @Test
     public void doesNotSaveSingleStubOnEditIfNotFlaggedPersistent() {
         UUID stubId = UUID.randomUUID();
-        stubFor(get(urlEqualTo("/no-save"))
+        stubFor("",get(urlEqualTo("/no-save"))
             .withId(stubId)
             .willReturn(aResponse().withBody("initial"))
         );
 
-        editStub(get(urlEqualTo("/no-save"))
+        editStub("",get(urlEqualTo("/no-save"))
             .withId(stubId)
             .willReturn(aResponse().withBody("modified"))
         );
@@ -154,28 +154,28 @@ public class StubMappingPersistenceAcceptanceTest {
 
     @Test
     public void deletesPersistentStubMappingIfFlaggedPersistent() {
-        StubMapping stubMapping = stubFor(get(urlEqualTo("/to-delete")).persistent());
+        StubMapping stubMapping = stubFor("",get(urlEqualTo("/to-delete")).persistent());
         assertMappingsDirContainsOneFile();
 
-        removeStub(stubMapping);
+        removeStub("",stubMapping);
         assertMappingsDirIsEmpty();
     }
 
     @Test
     public void doesNotDeletePersistentStubMappingIfNotFlaggedPersistent() {
-        StubMapping stubMapping = stubFor(get(urlEqualTo("/to-not-delete")));
-        saveAllMappings();
+        StubMapping stubMapping = stubFor("",get(urlEqualTo("/to-not-delete")));
+        saveAllMappings("");
         assertMappingsDirContainsOneFile();
 
-        removeStub(stubMapping);
+        removeStub("",stubMapping);
         assertMappingsDirContainsOneFile();
     }
 
     @Test
     public void deletesAllPersistentStubMappingsOnReset() {
-        stubFor(get(urlEqualTo("/to-delete/1")).persistent());
-        stubFor(get(urlEqualTo("/to-delete/2")).persistent());
-        stubFor(get(urlEqualTo("/to-delete/3")).persistent());
+        stubFor("",get(urlEqualTo("/to-delete/1")).persistent());
+        stubFor("",get(urlEqualTo("/to-delete/2")).persistent());
+        stubFor("",get(urlEqualTo("/to-delete/3")).persistent());
 
         assertMappingsDirSize(3);
 
@@ -197,10 +197,10 @@ public class StubMappingPersistenceAcceptanceTest {
         wireMockServer.resetToDefaultMappings(); // Loads from the file system
         assertThat(mappingFilePath.toFile().exists(), is(true));
 
-        StubMapping stubMapping = wm.getStubMappings().get(0);
+        StubMapping stubMapping = wm.getStubMappings("").get(0);
         assertThat(stubMapping.getId(), is(stubId));
 
-        removeStub(stubMapping);
+        removeStub("",stubMapping);
         assertThat(mappingFilePath.toFile().exists(), is(false));
     }
 

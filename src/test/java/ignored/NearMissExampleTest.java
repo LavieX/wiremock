@@ -76,13 +76,13 @@ public class NearMissExampleTest {
 
     @Test
     public void showSingleUnmatchedRequest() {
-        wm.stubFor(get(urlEqualTo("/hit")).willReturn(aResponse().withStatus(200)));
+        wm.stubFor("",get(urlEqualTo("/hit")).willReturn(aResponse().withStatus(200)));
         client.get("/near-misssss");
     }
 
     @Test
     public void showManyUnmatchedRequests() {
-        wm.stubFor(get(urlEqualTo("/hit")).willReturn(aResponse().withStatus(200)));
+        wm.stubFor("",get(urlEqualTo("/hit")).willReturn(aResponse().withStatus(200)));
         client.get("/near-misssss");
         client.get("/hat");
         client.get("/whatevs");

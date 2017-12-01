@@ -258,4 +258,10 @@ public class WireMockHttpServletRequestAdapter implements Request {
     public String toString() {
         return request.toString() + getBodyAsString();
     }
+
+	@Override
+	public String getContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

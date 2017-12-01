@@ -36,18 +36,18 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
 
 	@Test
 	public void createMappingsInScenarioAndChangeResponseWithStateChange() {
-		givenThat(get(urlEqualTo("/some/resource"))
+		givenThat("",get(urlEqualTo("/some/resource"))
 				.willReturn(aResponse().withBody("Initial"))
 				.inScenario("SomeResourceUpdate")
 				.whenScenarioStateIs(STARTED));
 		
-		givenThat(put(urlEqualTo("/some/resource"))
+		givenThat("",put(urlEqualTo("/some/resource"))
 				.willReturn(aResponse().withStatus(HTTP_OK))
 				.inScenario("SomeResourceUpdate")
 				.willSetStateTo("BodyModified")
 				.whenScenarioStateIs(STARTED));
 		
-		givenThat(get(urlEqualTo("/some/resource"))
+		givenThat("",get(urlEqualTo("/some/resource"))
 				.willReturn(aResponse().withBody("Modified"))
 				.inScenario("SomeResourceUpdate")
 				.whenScenarioStateIs("BodyModified"));
@@ -59,11 +59,11 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
 	
 	@Test
 	public void mappingInScenarioIndependentOfCurrentState() {
-		givenThat(get(urlEqualTo("/state/independent/resource"))
+		givenThat("",get(urlEqualTo("/state/independent/resource"))
 				.willReturn(aResponse().withBody("Some content"))
 				.inScenario("StateIndependent"));
 		
-		givenThat(put(urlEqualTo("/state/modifying/resource"))
+		givenThat("",put(urlEqualTo("/state/modifying/resource"))
 				.willReturn(aResponse().withStatus(HTTP_OK))
 				.inScenario("StateIndependent")
 				.willSetStateTo("BodyModified"));
@@ -81,12 +81,12 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
 	
 	@Test
 	public void resetAllScenariosState() {
-		givenThat(get(urlEqualTo("/stateful/resource"))
+		givenThat("",get(urlEqualTo("/stateful/resource"))
 				.willReturn(aResponse().withBody("Expected content"))
 				.inScenario("ResetScenario")
 				.whenScenarioStateIs(STARTED));
 		
-		givenThat(put(urlEqualTo("/stateful/resource"))
+		givenThat("",put(urlEqualTo("/stateful/resource"))
 				.willReturn(aResponse().withStatus(HTTP_OK))
 				.inScenario("ResetScenario")
 				.willSetStateTo("Changed"));
@@ -106,13 +106,13 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
 
     @Test
 	public void canGetAllScenarios() {
-	    stubFor(get("/scenarios/1")
+	    stubFor("",get("/scenarios/1")
             .inScenario("scenario_one")
             .whenScenarioStateIs(STARTED)
             .willSetStateTo("state_2")
             .willReturn(ok("1:1")));
 
-        stubFor(get("/scenarios/2")
+        stubFor("",get("/scenarios/2")
             .inScenario("scenario_two")
             .whenScenarioStateIs(STARTED)
             .willReturn(ok("2:1")));
@@ -134,19 +134,19 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
     public void scenarioIsRemovedWhenLastMappingReferringToItIsRemoved() {
 	    final String NAME = "remove_this_scenario";
 
-        StubMapping stub1 = stubFor(get("/scenarios/22")
+        StubMapping stub1 = stubFor("",get("/scenarios/22")
             .inScenario(NAME)
             .whenScenarioStateIs(STARTED)
             .willSetStateTo("state_2")
             .willReturn(ok("1")));
 
-        StubMapping stub2 = stubFor(get("/scenarios/22")
+        StubMapping stub2 = stubFor("",get("/scenarios/22")
             .inScenario(NAME)
             .whenScenarioStateIs("state_2")
             .willSetStateTo("state_2")
             .willReturn(ok("2")));
 
-        StubMapping stub3 = stubFor(get("/scenarios/22")
+        StubMapping stub3 = stubFor("",get("/scenarios/22")
             .inScenario(NAME)
             .whenScenarioStateIs("state_2")
             .willSetStateTo("state_3")
@@ -154,9 +154,9 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
 
         assertThat(getAllScenarios().size(), is(1));
 
-        removeStub(stub1);
-        removeStub(stub2);
-        removeStub(stub3);
+        removeStub("",stub1);
+        removeStub("",stub2);
+        removeStub("",stub3);
 
         assertThat(getAllScenarios().size(), is(0));
     }
@@ -168,14 +168,14 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
         final String OLD_NAME = "old_scenario";
         final String NEW_NAME = "new_scenario";
 
-        stubFor(get("/scenarios/33")
+        stubFor("",get("/scenarios/33")
             .withId(ID1)
             .inScenario(OLD_NAME)
             .whenScenarioStateIs(STARTED)
             .willSetStateTo("state_2")
             .willReturn(ok("1")));
 
-        stubFor(get("/scenarios/33")
+        stubFor("",get("/scenarios/33")
             .withId(ID2)
             .inScenario(OLD_NAME)
             .whenScenarioStateIs("state_2")
@@ -185,13 +185,13 @@ public class ScenarioAcceptanceTest extends AcceptanceTestBase {
         assertThat(getAllScenarios().size(), is(1));
         assertThat(getAllScenarios().get(0).getName(), is(OLD_NAME));
 
-        editStub(get("/scenarios/33")
+        editStub("",get("/scenarios/33")
             .withId(ID1)
             .inScenario(NEW_NAME)
             .whenScenarioStateIs(STARTED)
             .willSetStateTo("state_2")
             .willReturn(ok("1")));
-        editStub(get("/scenarios/33")
+        editStub("",get("/scenarios/33")
             .withId(ID2)
             .inScenario(NEW_NAME)
             .whenScenarioStateIs("state_2")

@@ -57,10 +57,10 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
             .extensions(new TestParameterisedTransformer())
             .withRootDirectory(setupTempFileRoot().getAbsolutePath()));
         proxyingService.start();
-        proxyingService.stubFor(proxyAllTo("http://localhost:" + wireMockServer.port()));
+        proxyingService.stubFor("",proxyAllTo("http://localhost:" + wireMockServer.port()));
 
         targetService = wireMockServer;
-        targetService.stubFor(any(anyUrl()).willReturn(ok()));
+        targetService.stubFor("",any(anyUrl()).willReturn(ok()));
 
         client = new WireMockTestClient(proxyingService.port());
         WireMock.configureFor(proxyingService.port());
@@ -75,7 +75,7 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void snapshotRecordsAllLoggedRequestsWhenNoParametersPassed() throws Exception {
-        targetService.stubFor(get("/one").willReturn(
+        targetService.stubFor("",get("/one").willReturn(
             aResponse()
                 .withHeader("Content-Type", "text/plain")
                 .withBody("Number one")));
@@ -85,7 +85,7 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
         client.postJson("/three", "{ \"counter\": 55 }");
 
         List<StubMapping> returnedMappings = proxyingService.snapshotRecord().getStubMappings();
-        List<StubMapping> serverMappings = proxyingService.getStubMappings();
+        List<StubMapping> serverMappings = proxyingService.getStubMappings("");
 
         assertTrue("All of the returned mappings should be present in the server", serverMappings.containsAll(returnedMappings));
         assertThat(returnedMappings.size(), is(3));
@@ -167,16 +167,16 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void supportsBodyExtractCriteria() throws Exception {
-        targetService.stubFor(get("/small/text").willReturn(aResponse()
+        targetService.stubFor("",get("/small/text").willReturn(aResponse()
                 .withHeader("Content-Type", "text/plain")
                 .withBody("123")));
-        targetService.stubFor(get("/large/text").willReturn(aResponse()
+        targetService.stubFor("",get("/large/text").willReturn(aResponse()
             .withHeader("Content-Type", "text/plain")
             .withBody("12345678901234567")));
-        targetService.stubFor(get("/small/binary").willReturn(aResponse()
+        targetService.stubFor("",get("/small/binary").willReturn(aResponse()
             .withHeader("Content-Type", "application/octet-stream")
             .withBody(new byte[] { 1, 2, 3 })));
-        targetService.stubFor(get("/large/binary").willReturn(aResponse()
+        targetService.stubFor("",get("/large/binary").willReturn(aResponse()
             .withHeader("Content-Type", "application/octet-stream")
             .withBody(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 })));
 
@@ -212,13 +212,13 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void buildsAScenarioForRepeatedIdenticalRequests() {
-        targetService.stubFor(get("/stateful").willReturn(ok("One")));
+        targetService.stubFor("",get("/stateful").willReturn(ok("One")));
         client.get("/stateful");
 
-        targetService.stubFor(get("/stateful").willReturn(ok("Two")));
+        targetService.stubFor("",get("/stateful").willReturn(ok("Two")));
         client.get("/stateful");
 
-        targetService.stubFor(get("/stateful").willReturn(ok("Three")));
+        targetService.stubFor("",get("/stateful").willReturn(ok("Three")));
         client.get("/stateful");
 
         // Scenario creation is the default
@@ -318,7 +318,7 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
 
         snapshotRecord();
 
-        List<StubMapping> serverMappings = proxyingService.getStubMappings();
+        List<StubMapping> serverMappings = proxyingService.getStubMappings("");
         assertThat(serverMappings, hasItem(WireMatchers.stubMappingWithUrl("/get-this")));
     }
 
@@ -329,7 +329,7 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
 
         snapshotRecord(recordSpec().onlyRequestsMatching(getRequestedFor(urlEqualTo("/get-this"))));
 
-        List<StubMapping> serverMappings = proxyingService.getStubMappings();
+        List<StubMapping> serverMappings = proxyingService.getStubMappings("");
         assertThat(serverMappings, hasItem(WireMatchers.stubMappingWithUrl("/get-this")));
         assertThat(serverMappings, not(hasItem(WireMatchers.stubMappingWithUrl("/but-not-this"))));
     }
@@ -339,7 +339,7 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
         client.get("/get-this-too");
         adminClient.takeSnapshotRecording();
 
-        List<StubMapping> serverMappings = proxyingService.getStubMappings();
+        List<StubMapping> serverMappings = proxyingService.getStubMappings("");
         assertThat(serverMappings, hasItem(WireMatchers.stubMappingWithUrl("/get-this-too")));
     }
 
@@ -350,7 +350,7 @@ public class SnapshotDslAcceptanceTest extends AcceptanceTestBase {
 
         adminClient.takeSnapshotRecording(recordSpec().onlyRequestsMatching(getRequestedFor(urlEqualTo("/get-this"))));
 
-        List<StubMapping> serverMappings = proxyingService.getStubMappings();
+        List<StubMapping> serverMappings = proxyingService.getStubMappings("");
         assertThat(serverMappings, hasItem(WireMatchers.stubMappingWithUrl("/get-this")));
         assertThat(serverMappings, not(hasItem(WireMatchers.stubMappingWithUrl("/but-not-this"))));
     }

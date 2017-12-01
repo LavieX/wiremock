@@ -29,7 +29,7 @@ public class DateHeaderAcceptanceTest extends AcceptanceTestBase {
     @Test
     public void returnsOnlyStubbedDateHeader() {
 
-        stubFor(get(urlEqualTo("/stubbed/dateheader"))
+        stubFor("", get(urlEqualTo("/stubbed/dateheader"))
             .willReturn(aResponse().withStatus(200).withHeader("Date", "Sun, 06 Nov 1994 08:49:37 GMT")));
 
         WireMockResponse response = testClient.get("/stubbed/dateheader");
@@ -40,7 +40,7 @@ public class DateHeaderAcceptanceTest extends AcceptanceTestBase {
     @Test
     public void returnsNoDateHeaderIfNotStubbed() {
 
-        stubFor(get(urlEqualTo("/nodateheader")).willReturn(aResponse().withStatus(200)));
+        stubFor("", get(urlEqualTo("/nodateheader")).willReturn(aResponse().withStatus(200)));
 
         WireMockResponse response = testClient.get("/nodateheader");
 

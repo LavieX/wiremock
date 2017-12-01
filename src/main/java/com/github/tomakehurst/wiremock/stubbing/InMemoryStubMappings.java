@@ -27,6 +27,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +41,7 @@ import static com.google.common.collect.Iterables.tryFind;
 
 public class InMemoryStubMappings implements StubMappings {
 	
-	private final SortedConcurrentMappingSet mappings = new SortedConcurrentMappingSet();
+	private final Map<String , SortedConcurrentMappingSet> mappings = new HashMap<>();
 	private final Scenarios scenarios = new Scenarios();
 	private final Map<String, RequestMatcherExtension> customMatchers;
     private final Map<String, ResponseDefinitionTransformer> transformers;
@@ -61,7 +62,7 @@ public class InMemoryStubMappings implements StubMappings {
 	@Override
 	public ServeEvent serveFor(Request request) {
 		StubMapping matchingMapping = find(
-				mappings,
+				mappings.get(request.getContext()),
 				mappingMatchingAndInCorrectScenarioState(request),
 				StubMapping.NOT_CONFIGURED);
 		
@@ -95,21 +96,21 @@ public class InMemoryStubMappings implements StubMappings {
     }
 
 	@Override
-	public void addMapping(StubMapping mapping) {
-		mappings.add(mapping);
-		scenarios.onStubMappingAddedOrUpdated(mapping, mappings);
+	public void addMapping(String context, StubMapping mapping) {
+		mappings.get(context).add(mapping);
+		scenarios.onStubMappingAddedOrUpdated(mapping, mappings.get(context));
 	}
 
 	@Override
-	public void removeMapping(StubMapping mapping) {
-		mappings.remove(mapping);
-		scenarios.onStubMappingRemoved(mapping, mappings);
+	public void removeMapping(String context, StubMapping mapping) {
+		mappings.get(context).remove(mapping);
+		scenarios.onStubMappingRemoved(mapping, mappings.get(context));
 	}
 
 	@Override
-	public void editMapping(StubMapping stubMapping) {
+	public void editMapping(String context, StubMapping stubMapping) {
 		final Optional<StubMapping> optionalExistingMapping = tryFind(
-				mappings,
+				mappings.get(context),
 				mappingMatchingUuid(stubMapping.getUuid())
 		);
 
@@ -124,8 +125,8 @@ public class InMemoryStubMappings implements StubMappings {
 		stubMapping.setInsertionIndex(existingMapping.getInsertionIndex());
 		stubMapping.setDirty(true);
 
-		mappings.replace(existingMapping, stubMapping);
-		scenarios.onStubMappingAddedOrUpdated(stubMapping, mappings);
+		mappings.get(context).replace(existingMapping, stubMapping);
+		scenarios.onStubMappingAddedOrUpdated(stubMapping, mappings.get(context));
 	}
 
 
@@ -141,13 +142,13 @@ public class InMemoryStubMappings implements StubMappings {
 	}
 
     @Override
-    public List<StubMapping> getAll() {
-        return ImmutableList.copyOf(mappings);
+    public List<StubMapping> getAll(String context) {
+        return ImmutableList.copyOf(mappings.get(context));
     }
 
 	@Override
-	public Optional<StubMapping> get(final UUID id) {
-		return tryFind(mappings, new Predicate<StubMapping>() {
+	public Optional<StubMapping> get(String context, final UUID id) {
+		return tryFind(mappings.get(context), new Predicate<StubMapping>() {
 			@Override
 			public boolean apply(StubMapping input) {
 				return input.getUuid().equals(id);

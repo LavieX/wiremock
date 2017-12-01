@@ -16,10 +16,8 @@
 package com.github.tomakehurst.wiremock.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,9 +46,7 @@ public final class Json {
 		try {
 			ObjectMapper mapper = getObjectMapper();
 			return mapper.readValue(json, clazz);
-		} catch (JsonMappingException mappingException) {
-            throw JsonException.fromJackson(mappingException);
-        } catch (IOException ioe) {
+		} catch (IOException ioe) {
 			return throwUnchecked(ioe, clazz);
 		}
 	}

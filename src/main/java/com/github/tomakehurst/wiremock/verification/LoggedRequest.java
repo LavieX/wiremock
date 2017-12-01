@@ -43,6 +43,7 @@ import static com.google.common.base.MoreObjects.firstNonNull;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoggedRequest implements Request {
 
+	private final String context;
     private final String url;
     private final String absoluteUrl;
     private final String clientIp;
@@ -64,7 +65,8 @@ public class LoggedRequest implements Request {
             request.isBrowserProxyRequest(),
             new Date(),
             request.getBodyAsBase64(),
-            null);
+            null,
+            request.getContext());
     }
 
     @JsonCreator
@@ -78,7 +80,8 @@ public class LoggedRequest implements Request {
             @JsonProperty("browserProxyRequest") boolean isBrowserProxyRequest,
             @JsonProperty("loggedDate") Date loggedDate,
             @JsonProperty("bodyAsBase64") String bodyAsBase64,
-            @JsonProperty("body") String ignoredBodyOnlyUsedForBinding) {
+            @JsonProperty("body") String ignoredBodyOnlyUsedForBinding,
+            @JsonProperty("context") String context) {
         this.url = url;
         this.absoluteUrl = absoluteUrl;
         this.clientIp = clientIp;
@@ -89,6 +92,7 @@ public class LoggedRequest implements Request {
         this.queryParams = splitQuery(URI.create(url));
         this.isBrowserProxyRequest = isBrowserProxyRequest;
         this.loggedDate = loggedDate;
+        this.context = context;
     }
 
     @Override
@@ -213,4 +217,9 @@ public class LoggedRequest implements Request {
     public String toString() {
         return Json.write(this);
     }
+
+	@Override
+	public String getContext() {
+		return context;
+	}
 }

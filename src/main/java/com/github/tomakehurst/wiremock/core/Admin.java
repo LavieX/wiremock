@@ -32,12 +32,12 @@ import java.util.UUID;
 
 public interface Admin {
 
-	void addStubMapping(StubMapping stubMapping);
-	void editStubMapping(StubMapping stubMapping);
-	void removeStubMapping(StubMapping stubbMapping);
-    ListStubMappingsResult listAllStubMappings();
-    SingleStubMappingResult getStubMapping(UUID id);
-    void saveMappings();
+	void addStubMapping(String context,StubMapping stubMapping);
+	void editStubMapping(String context, StubMapping stubMapping);
+	void removeStubMapping(String context, StubMapping stubbMapping);
+    ListStubMappingsResult listAllStubMappings(String context);
+    SingleStubMappingResult getStubMapping(String context, UUID id);
+    void saveMappings(String context);
 
 	void resetRequests();
     void resetScenarios();

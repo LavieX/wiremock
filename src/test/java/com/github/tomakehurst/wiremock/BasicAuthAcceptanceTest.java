@@ -27,7 +27,7 @@ public class BasicAuthAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void matchesPreemptiveBasicAuthWhenCredentialAreCorrect() {
-        stubFor(get(urlEqualTo("/basic/auth/preemptive"))
+        stubFor("", get(urlEqualTo("/basic/auth/preemptive"))
             .withBasicAuth("the-username", "thepassword")
             .willReturn(aResponse().withStatus(200)));
 
@@ -39,7 +39,7 @@ public class BasicAuthAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void doesNotMatchPreemptiveBasicAuthWhenCredentialsAreIncorrect() {
-        stubFor(get(urlEqualTo("/basic/auth/preemptive"))
+        stubFor("", get(urlEqualTo("/basic/auth/preemptive"))
             .withBasicAuth("the-username", "thepassword")
             .willReturn(aResponse().withStatus(200)));
 
@@ -51,7 +51,7 @@ public class BasicAuthAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void matcheswhenBASICInHeaderIsAllUpperCase() {
-        stubFor(get(urlEqualTo("/basic/auth/case-insensitive"))
+        stubFor("", get(urlEqualTo("/basic/auth/case-insensitive"))
             .withBasicAuth("tom", "secret")
             .willReturn(aResponse()
                 .withStatus(200)

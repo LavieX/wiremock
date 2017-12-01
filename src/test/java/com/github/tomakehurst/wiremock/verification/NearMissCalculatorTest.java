@@ -170,7 +170,7 @@ public class NearMissCalculatorTest {
             }
         }).toList();
         context.checking(new Expectations() {{
-            allowing(stubMappings).getAll(); will(returnValue(mappings));
+            allowing(stubMappings).getAll(""); will(returnValue(mappings));
         }});
     }
 

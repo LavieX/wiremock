@@ -42,7 +42,7 @@ public class DelayAndCustomMatcherAcceptanceTest {
 
     @Test
     public void delayIsAddedWhenCustomResponseTransformerPresent() {
-        stubFor(get(urlEqualTo("/delay-this"))
+        stubFor("", get(urlEqualTo("/delay-this"))
             .willReturn(aResponse()
                 .withStatus(200)
                 .withTransformers("response-body-changer")

@@ -15,6 +15,8 @@
  */
 package com.github.tomakehurst.wiremock.admin.tasks;
 
+import static com.github.tomakehurst.wiremock.admin.AdminRoutes.CONTEXT_PATHPARAM;
+
 import com.github.tomakehurst.wiremock.admin.AdminTask;
 import com.github.tomakehurst.wiremock.admin.model.PathParams;
 import com.github.tomakehurst.wiremock.core.Admin;
@@ -24,7 +26,7 @@ import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 public class SaveMappingsTask implements AdminTask {
     @Override
     public ResponseDefinition execute(Admin admin, Request request, PathParams pathParams) {
-        admin.saveMappings();
+        admin.saveMappings(pathParams.get(CONTEXT_PATHPARAM));
         return ResponseDefinition.ok();
     }
 }

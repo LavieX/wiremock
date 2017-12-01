@@ -102,32 +102,32 @@ public class WireMock {
 		admin = new HttpAdminClient(DEFAULT_HOST, DEFAULT_PORT);
 	}
 
-	public static StubMapping givenThat(MappingBuilder mappingBuilder) {
-		return defaultInstance.get().register(mappingBuilder);
+	public static StubMapping givenThat(String context, MappingBuilder mappingBuilder) {
+		return defaultInstance.get().register(context,mappingBuilder);
 	}
 
-	public static StubMapping stubFor(MappingBuilder mappingBuilder) {
-		return givenThat(mappingBuilder);
+	public static StubMapping stubFor(String context, MappingBuilder mappingBuilder) {
+		return givenThat(context,mappingBuilder);
 	}
 
-	public static void editStub(MappingBuilder mappingBuilder) {
-		defaultInstance.get().editStubMapping(mappingBuilder);
+	public static void editStub(String context, MappingBuilder mappingBuilder) {
+		defaultInstance.get().editStubMapping(context, mappingBuilder);
 	}
 
-	public static void removeStub(MappingBuilder mappingBuilder) {
-		defaultInstance.get().removeStubMapping(mappingBuilder);
+	public static void removeStub(String context, MappingBuilder mappingBuilder) {
+		defaultInstance.get().removeStubMapping(context,mappingBuilder);
 	}
 
-    public static void removeStub(StubMapping stubMapping) {
-        defaultInstance.get().removeStubMapping(stubMapping);
+    public static void removeStub(String context, StubMapping stubMapping) {
+        defaultInstance.get().removeStubMapping(context, stubMapping);
     }
 
-    public static ListStubMappingsResult listAllStubMappings() {
-        return defaultInstance.get().allStubMappings();
+    public static ListStubMappingsResult listAllStubMappings(String context) {
+        return defaultInstance.get().allStubMappings(context);
     }
 
-    public static StubMapping getSingleStubMapping(UUID id) {
-        return defaultInstance.get().getStubMapping(id).getItem();
+    public static StubMapping getSingleStubMapping(String context, UUID id) {
+        return defaultInstance.get().getStubMapping(context,id).getItem();
     }
 
     public static void configureFor(int port) {
@@ -226,12 +226,12 @@ public class WireMock {
         return StringValuePattern.ABSENT;
     }
 
-    public void saveMappings() {
-        admin.saveMappings();
+    public void saveMappings(String context) {
+        admin.saveMappings(context);
     }
 
-    public static void saveAllMappings() {
-        defaultInstance.get().saveMappings();
+    public static void saveAllMappings(String context) {
+        defaultInstance.get().saveMappings(context);
     }
 
     public void removeMappings() {
@@ -282,34 +282,34 @@ public class WireMock {
         defaultInstance.get().resetToDefaultMappings();
     }
 
-	public StubMapping register(MappingBuilder mappingBuilder) {
+	public StubMapping register(String context,MappingBuilder mappingBuilder) {
 		StubMapping mapping = mappingBuilder.build();
-		register(mapping);
+		register(context,mapping);
 		return mapping;
 	}
 
-    public void register(StubMapping mapping) {
-        admin.addStubMapping(mapping);
+    public void register(String context, StubMapping mapping) {
+        admin.addStubMapping(context, mapping);
     }
 
-	public void editStubMapping(MappingBuilder mappingBuilder) {
-		admin.editStubMapping(mappingBuilder.build());
+	public void editStubMapping(String context,MappingBuilder mappingBuilder) {
+		admin.editStubMapping(context,mappingBuilder.build());
 	}
 
-	public void removeStubMapping(MappingBuilder mappingBuilder) {
-		admin.removeStubMapping(mappingBuilder.build());
+	public void removeStubMapping(String context,MappingBuilder mappingBuilder) {
+		admin.removeStubMapping(context,mappingBuilder.build());
 	}
 
-	public void removeStubMapping(StubMapping stubMapping) {
-		admin.removeStubMapping(stubMapping);
+	public void removeStubMapping(String context,StubMapping stubMapping) {
+		admin.removeStubMapping(context,stubMapping);
 	}
 
-    public ListStubMappingsResult allStubMappings() {
-        return admin.listAllStubMappings();
+    public ListStubMappingsResult allStubMappings(String context) {
+        return admin.listAllStubMappings(context);
     }
 
-    public SingleStubMappingResult getStubMapping(UUID id) {
-        return admin.getStubMapping(id);
+    public SingleStubMappingResult getStubMapping(String context,UUID id) {
+        return admin.getStubMapping(context, id);
     }
 
     public static UrlPattern urlEqualTo(String testUrl) {

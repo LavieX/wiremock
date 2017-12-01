@@ -60,7 +60,7 @@ public class InMemoryMappingsTest {
 
     @Test
     public void correctlyAcceptsMappingAndReturnsCorrespondingResponse() {
-        mappings.addMapping(new StubMapping(
+        mappings.addMapping( "", new StubMapping(
             newRequestPattern(PUT, urlEqualTo("/some/resource")).build(),
             new ResponseDefinition(204, "")));
 
@@ -72,7 +72,7 @@ public class InMemoryMappingsTest {
 
     @Test
     public void returnsNotFoundWhenMethodIncorrect() {
-        mappings.addMapping(new StubMapping(
+        mappings.addMapping("", new StubMapping(
             newRequestPattern(PUT, urlEqualTo("/some/resource")).build(),
             new ResponseDefinition(204, "")));
 
@@ -84,7 +84,7 @@ public class InMemoryMappingsTest {
 
     @Test
     public void returnsNotFoundWhenUrlIncorrect() {
-        mappings.addMapping(new StubMapping(
+        mappings.addMapping("", new StubMapping(
             newRequestPattern(PUT, urlEqualTo("/some/resource")).build(),
             new ResponseDefinition(204, "")));
 
@@ -104,11 +104,11 @@ public class InMemoryMappingsTest {
 
     @Test
     public void returnsMostRecentlyInsertedResponseIfTwoOrMoreMatch() {
-        mappings.addMapping(new StubMapping(
+        mappings.addMapping("", new StubMapping(
             newRequestPattern(GET, urlEqualTo("/duplicated/resource")).build(),
             new ResponseDefinition(204, "Some content")));
 
-        mappings.addMapping(new StubMapping(
+        mappings.addMapping("", new StubMapping(
             newRequestPattern(GET, urlEqualTo("/duplicated/resource")).build(),
             new ResponseDefinition(201, "Desired content")));
 
@@ -125,7 +125,7 @@ public class InMemoryMappingsTest {
             new ResponseDefinition(204, "Initial content"));
         firstGetMapping.setScenarioName("TestScenario");
         firstGetMapping.setRequiredScenarioState(STARTED);
-        mappings.addMapping(firstGetMapping);
+        mappings.addMapping("", firstGetMapping);
 
         StubMapping putMapping = new StubMapping(
             newRequestPattern(PUT, urlEqualTo("/scenario/resource")).build(),
@@ -133,14 +133,14 @@ public class InMemoryMappingsTest {
         putMapping.setScenarioName("TestScenario");
         putMapping.setRequiredScenarioState(STARTED);
         putMapping.setNewScenarioState("Modified");
-        mappings.addMapping(putMapping);
+        mappings.addMapping("", putMapping);
 
         StubMapping secondGetMapping = new StubMapping(
             newRequestPattern(GET, urlEqualTo("/scenario/resource")).build(),
             new ResponseDefinition(204, "Modified content"));
         secondGetMapping.setScenarioName("TestScenario");
         secondGetMapping.setRequiredScenarioState("Modified");
-        mappings.addMapping(secondGetMapping);
+        mappings.addMapping("", secondGetMapping);
 
 
         Request firstGet = aRequest(context, "firstGet").withMethod(GET).withUrl("/scenario/resource").build();
@@ -158,7 +158,7 @@ public class InMemoryMappingsTest {
             newRequestPattern(GET, urlEqualTo("/scenario/resource")).build(),
             new ResponseDefinition(200, "Expected content"));
         firstGetMapping.setScenarioName("TestScenario");
-        mappings.addMapping(firstGetMapping);
+        mappings.addMapping("", firstGetMapping);
 
         Request request = aRequest(context).withMethod(GET).withUrl("/scenario/resource").build();
 
@@ -172,7 +172,7 @@ public class InMemoryMappingsTest {
             new ResponseDefinition(204, "Desired content"));
         firstGetMapping.setScenarioName("TestScenario");
         firstGetMapping.setRequiredScenarioState(STARTED);
-        mappings.addMapping(firstGetMapping);
+        mappings.addMapping("", firstGetMapping);
 
         StubMapping putMapping = new StubMapping(
             newRequestPattern(PUT, urlEqualTo("/scenario/resource")).build(),
@@ -180,7 +180,7 @@ public class InMemoryMappingsTest {
         putMapping.setScenarioName("TestScenario");
         putMapping.setRequiredScenarioState(STARTED);
         putMapping.setNewScenarioState("Modified");
-        mappings.addMapping(putMapping);
+        mappings.addMapping("", putMapping);
 
         mappings.serveFor(
             aRequest(context, "put /scenario/resource")
@@ -205,11 +205,11 @@ public class InMemoryMappingsTest {
         StubMapping firstMapping = aBasicMappingInScenario("Starting content");
         firstMapping.setRequiredScenarioState(Scenario.STARTED);
         firstMapping.setNewScenarioState("modified");
-        mappings.addMapping(firstMapping);
+        mappings.addMapping("", firstMapping);
 
         StubMapping secondMapping = aBasicMappingInScenario("Modified content");
         secondMapping.setRequiredScenarioState("modified");
-        mappings.addMapping(secondMapping);
+        mappings.addMapping("", secondMapping);
 
         Request request = aRequest(context).withMethod(POST).withUrl("/scenario/resource").build();
         mappings.serveFor(request);
@@ -219,7 +219,7 @@ public class InMemoryMappingsTest {
 
         StubMapping thirdMapping = aBasicMappingInScenario("Starting content");
         thirdMapping.setRequiredScenarioState(Scenario.STARTED);
-        mappings.addMapping(thirdMapping);
+        mappings.addMapping("", thirdMapping);
 
         assertThat(mappings.serveFor(request).getResponseDefinition().getBody(), is("Starting content"));
     }

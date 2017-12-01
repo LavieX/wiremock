@@ -41,7 +41,7 @@ public class ResponseTransformerAcceptanceTest {
     public void transformsStubResponse() {
         startWithExtensions(StubResponseTransformer.class);
 
-        wm.stubFor(get(urlEqualTo("/response-transform")).willReturn(aResponse().withBody("Original body")));
+        wm.stubFor("",get(urlEqualTo("/response-transform")).willReturn(aResponse().withBody("Original body")));
 
         assertThat(client.get("/response-transform").content(), is("Modified body"));
     }
@@ -50,7 +50,7 @@ public class ResponseTransformerAcceptanceTest {
     public void acceptsTransformerParameters() {
         startWithExtensions(StubResponseTransformerWithParams.class);
 
-        wm.stubFor(get(urlEqualTo("/response-transform-with-params")).willReturn(
+        wm.stubFor("",get(urlEqualTo("/response-transform-with-params")).willReturn(
                 aResponse()
                         .withTransformerParameter("name", "John")
                         .withTransformerParameter("number", 66)
@@ -64,7 +64,7 @@ public class ResponseTransformerAcceptanceTest {
     public void globalTransformAppliedWithLocalParameters() {
         startWithExtensions(GlobalResponseTransformer.class);
 
-        wm.stubFor(get(urlEqualTo("/global-response-transform")).willReturn(aResponse()));
+        wm.stubFor("",get(urlEqualTo("/global-response-transform")).willReturn(aResponse()));
 
         assertThat(client.get("/global-response-transform").firstHeader("X-Extra"), is("extra val"));
     }

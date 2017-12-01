@@ -17,7 +17,7 @@ package com.github.tomakehurst.wiremock.recording;
 
 import com.github.tomakehurst.wiremock.common.Errors;
 import com.github.tomakehurst.wiremock.common.FileSource;
-import com.github.tomakehurst.wiremock.common.InvalidInputException;
+import com.github.tomakehurst.wiremock.common.InvalidRequestException;
 import com.github.tomakehurst.wiremock.common.Json;
 import com.github.tomakehurst.wiremock.core.Admin;
 import com.github.tomakehurst.wiremock.core.Options;
@@ -52,11 +52,12 @@ public class Recorder {
         }
 
         if (spec.getTargetBaseUrl() == null || spec.getTargetBaseUrl().isEmpty()) {
-            throw new InvalidInputException(Errors.validation("/targetBaseUrl", "targetBaseUrl is required"));
+            throw new InvalidRequestException(Errors.validation("/targetBaseUrl", "targetBaseUrl is required"));
         }
 
         StubMapping proxyMapping = proxyAllTo(spec.getTargetBaseUrl()).build();
-        admin.addStubMapping(proxyMapping);
+        //TODO THIS IS WRONG (empty string for context)
+        admin.addStubMapping("", proxyMapping);
 
         List<ServeEvent> serveEvents = admin.getServeEvents().getServeEvents();
         UUID initialId = serveEvents.isEmpty() ? null : serveEvents.get(0).getId();
@@ -74,7 +75,8 @@ public class Recorder {
 
         UUID lastId = serveEvents.isEmpty() ? null : serveEvents.get(0).getId();
         state = state.stop(lastId);
-        admin.removeStubMapping(state.getProxyMapping());
+        //TODO THIS IS WRONG (empty string for context)
+        admin.removeStubMapping("",state.getProxyMapping());
 
         if (serveEvents.isEmpty()) {
             return SnapshotRecordResult.empty();
@@ -113,7 +115,8 @@ public class Recorder {
             if (recordSpec.shouldPersist()) {
                 stubMapping.setPersistent(true);
             }
-            admin.addStubMapping(stubMapping);
+            //TODO THIS IS WRONG (empty string for context)
+            admin.addStubMapping("",stubMapping);
         }
 
         return recordSpec.getOutputFormat().format(stubMappings);

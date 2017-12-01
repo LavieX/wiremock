@@ -32,7 +32,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void matchesOnWellFormedCookie() {
-        stubFor(get(urlEqualTo("/good/cookie"))
+        stubFor("", get(urlEqualTo("/good/cookie"))
             .withCookie("my_cookie", containing("mycookievalue"))
             .willReturn(aResponse().withStatus(200)));
 
@@ -44,7 +44,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void matchesWhenMultipleCookiesAreSentAndRequired() {
-        stubFor(get(urlEqualTo("/good/cookies"))
+        stubFor("", get(urlEqualTo("/good/cookies"))
             .withCookie("my_cookie", containing("mycookievalue"))
             .withCookie("my_other_cookie", equalTo("exact-other-value"))
             .willReturn(aResponse().withStatus(200)));
@@ -57,7 +57,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void doesNotMatchWhenExpectedCookieIsAbsent() {
-        stubFor(get(urlEqualTo("/missing/cookie"))
+        stubFor("", get(urlEqualTo("/missing/cookie"))
             .withCookie("my_cookie", containing("mycookievalue"))
             .willReturn(aResponse().withStatus(200)));
 
@@ -69,7 +69,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void doesNotMatchWhenExpectedCookieHasTheWrongValue() {
-        stubFor(get(urlEqualTo("/bad/cookie"))
+        stubFor("", get(urlEqualTo("/bad/cookie"))
             .withCookie("my_cookie", containing("mycookievalue"))
             .willReturn(aResponse().withStatus(200)));
 
@@ -81,7 +81,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void doesNotMatchWhenExpectedCookieIsMalformed() {
-        stubFor(get(urlEqualTo("/very-bad/cookie"))
+        stubFor("", get(urlEqualTo("/very-bad/cookie"))
             .withCookie("my_cookie", containing("mycookievalue"))
             .willReturn(aResponse().withStatus(200)));
 
@@ -93,7 +93,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void matchesWhenRequiredAbsentCookieIsAbsent() {
-        stubFor(get(urlEqualTo("/absent/cookie"))
+        stubFor("", get(urlEqualTo("/absent/cookie"))
             .withCookie("not_this_cookie", absent())
             .willReturn(aResponse().withStatus(200)));
 
@@ -106,7 +106,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void doesNotMatchWhenRequiredAbsentCookieIsPresent() {
-        stubFor(get(urlEqualTo("/absent/cookie"))
+        stubFor("", get(urlEqualTo("/absent/cookie"))
             .withCookie("my_cookie", absent())
             .willReturn(aResponse().withStatus(200)));
 
@@ -129,7 +129,7 @@ public class CookieMatchingAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void matchesWhenRequiredCookieSentAsDuplicate() {
-        stubFor(get(urlEqualTo("/duplicate/cookie"))
+        stubFor("", get(urlEqualTo("/duplicate/cookie"))
             .withCookie("my_cookie", containing("mycookievalue"))
             .withCookie("my_other_cookie", equalTo("value-2"))
             .willReturn(aResponse().withStatus(200)));

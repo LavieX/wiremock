@@ -66,7 +66,7 @@ public class BindAddressTest {
         );
         wireMockServer.start();
 
-        wireMockServer.stubFor(get(urlPathEqualTo("/bind-test"))
+        wireMockServer.stubFor("", get(urlPathEqualTo("/bind-test"))
             .willReturn(aResponse().withStatus(200)));
     }
 

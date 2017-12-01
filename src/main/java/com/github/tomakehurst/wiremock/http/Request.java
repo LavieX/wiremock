@@ -22,6 +22,7 @@ import java.util.Set;
 
 public interface Request {
 
+	String getContext();
     String getUrl();
     String getAbsoluteUrl();
     RequestMethod getMethod();

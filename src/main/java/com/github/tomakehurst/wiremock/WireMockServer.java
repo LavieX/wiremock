@@ -205,43 +205,43 @@ public class WireMockServer implements Container, Stubbing, Admin {
     }
 
     @Override
-    public StubMapping givenThat(MappingBuilder mappingBuilder) {
-        return client.register(mappingBuilder);
+    public StubMapping givenThat(String context, MappingBuilder mappingBuilder) {
+        return client.register(context, mappingBuilder);
     }
 
     @Override
-    public StubMapping stubFor(MappingBuilder mappingBuilder) {
-        return givenThat(mappingBuilder);
+    public StubMapping stubFor(String context, MappingBuilder mappingBuilder) {
+        return givenThat(context,mappingBuilder);
     }
 
     @Override
-    public void editStub(MappingBuilder mappingBuilder) {
-        client.editStubMapping(mappingBuilder);
+    public void editStub(String context, MappingBuilder mappingBuilder) {
+        client.editStubMapping(context,mappingBuilder);
     }
 
     @Override
-    public void removeStub(MappingBuilder mappingBuilder) {
-        client.removeStubMapping(mappingBuilder);
+    public void removeStub(String context, MappingBuilder mappingBuilder) {
+        client.removeStubMapping(context,mappingBuilder);
     }
 
     @Override
-    public void removeStub(StubMapping stubMapping) {
-        client.removeStubMapping(stubMapping);
+    public void removeStub(String context, StubMapping stubMapping) {
+        client.removeStubMapping(context,stubMapping);
     }
 
     @Override
-    public List<StubMapping> getStubMappings() {
-        return client.allStubMappings().getMappings();
+    public List<StubMapping> getStubMappings(String context) {
+        return client.allStubMappings(context).getMappings();
     }
 
     @Override
-    public StubMapping getSingleStubMapping(UUID id) {
-        return client.getStubMapping(id).getItem();
+    public StubMapping getSingleStubMapping(String context, UUID id) {
+        return client.getStubMapping(context, id).getItem();
     }
 
     @Override
-    public void removeStubMapping(StubMapping stubMapping){
-        wireMockApp.removeStubMapping(stubMapping);
+    public void removeStubMapping(String context, StubMapping stubMapping){
+        wireMockApp.removeStubMapping(context,stubMapping);
     }
 
     @Override
@@ -290,28 +290,28 @@ public class WireMockServer implements Container, Stubbing, Admin {
     }
 
     @Override
-    public void addStubMapping(StubMapping stubMapping) {
-        wireMockApp.addStubMapping(stubMapping);
+    public void addStubMapping(String context, StubMapping stubMapping) {
+        wireMockApp.addStubMapping(context,stubMapping);
     }
 
     @Override
-    public void editStubMapping(StubMapping stubMapping) {
-        wireMockApp.editStubMapping(stubMapping);
+    public void editStubMapping(String context, StubMapping stubMapping) {
+        wireMockApp.editStubMapping(context,stubMapping);
     }
 
     @Override
-    public ListStubMappingsResult listAllStubMappings() {
-        return wireMockApp.listAllStubMappings();
+    public ListStubMappingsResult listAllStubMappings(String context) {
+        return wireMockApp.listAllStubMappings(context);
     }
 
     @Override
-    public SingleStubMappingResult getStubMapping(UUID id) {
-        return wireMockApp.getStubMapping(id);
+    public SingleStubMappingResult getStubMapping(String context, UUID id) {
+        return wireMockApp.getStubMapping(context,id);
     }
 
     @Override
-    public void saveMappings() {
-        wireMockApp.saveMappings();
+    public void saveMappings(String context) {
+        wireMockApp.saveMappings(context);
     }
 
     @Override

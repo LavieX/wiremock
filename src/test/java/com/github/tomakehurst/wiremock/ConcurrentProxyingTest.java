@@ -45,7 +45,7 @@ public class ConcurrentProxyingTest {
     public void concurrent() throws Exception {
         client = new WireMockTestClient(wm.port());
 
-        wm.stubFor(any(anyUrl())
+        wm.stubFor("", any(anyUrl())
             .atPriority(10)
             .willReturn(aResponse()
                 .proxiedFrom("http://localhost:" + target.port())));

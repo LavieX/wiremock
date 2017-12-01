@@ -71,7 +71,7 @@ public class WarDeploymentAcceptanceTest {
 	
 	@Test
 	public void acceptsAndReturnsStubMapping() {
-		givenThat(get(urlEqualTo("/war/stub")).willReturn(
+		givenThat("",get(urlEqualTo("/war/stub")).willReturn(
 				aResponse().withStatus(HTTP_OK).withBody("War stub OK")));
 		
 		assertThat(testClient.get("/wiremock/war/stub").content(), is("War stub OK"));
@@ -90,7 +90,7 @@ public class WarDeploymentAcceptanceTest {
     @Test
     public void tryingToSaveMappingsGives500() {
         try {
-            saveAllMappings();
+            saveAllMappings("");
             fail("Expected a VerificationException");
         } catch (VerificationException e) {
             assertThat(e.getMessage(), containsString("500"));

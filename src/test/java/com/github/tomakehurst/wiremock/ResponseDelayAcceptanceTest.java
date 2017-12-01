@@ -61,7 +61,7 @@ public class ResponseDelayAcceptanceTest {
 
     @Test
     public void requestTimesOutWhenDelayIsLongerThanSocketTimeout() throws Exception {
-        stubFor(get(urlEqualTo("/delayed")).willReturn(
+        stubFor("",get(urlEqualTo("/delayed")).willReturn(
                 aResponse()
                         .withStatus(200)
                         .withFixedDelay(LONGER_THAN_SOCKET_TIMEOUT)));
@@ -72,7 +72,7 @@ public class ResponseDelayAcceptanceTest {
 
     @Test
     public void requestIsSuccessfulWhenDelayIsShorterThanSocketTimeout() throws Exception {
-        stubFor(get(urlEqualTo("/delayed")).willReturn(
+        stubFor("",get(urlEqualTo("/delayed")).willReturn(
                 aResponse()
                         .withStatus(200)
                         .withFixedDelay(SHORTER_THAN_SOCKET_TIMEOUT)));
@@ -83,7 +83,7 @@ public class ResponseDelayAcceptanceTest {
 
     @Test
     public void requestIsRecordedInJournalBeforePerformingDelay() throws Exception {
-        stubFor(get(urlEqualTo("/delayed")).willReturn(
+        stubFor("",get(urlEqualTo("/delayed")).willReturn(
                 aResponse()
                         .withStatus(200)
                         .withFixedDelay(SHORTER_THAN_SOCKET_TIMEOUT)));
@@ -101,7 +101,7 @@ public class ResponseDelayAcceptanceTest {
 
     @Test
     public void inFlightDelayedRequestsAreNotRecordedInJournalAfterReset() throws Exception {
-        stubFor(get(urlEqualTo("/delayed")).willReturn(
+        stubFor("",get(urlEqualTo("/delayed")).willReturn(
                 aResponse()
                         .withStatus(200)
                         .withFixedDelay(SHORTER_THAN_SOCKET_TIMEOUT)));

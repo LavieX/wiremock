@@ -33,10 +33,6 @@ public class Errors {
         return new Errors(singletonList(new Error(code, new Error.Source(sourcePointer), title)));
     }
 
-    public static Errors single(Integer code, String sourcePointer, String title, String detail) {
-        return new Errors(singletonList(new Error(code, new Error.Source(sourcePointer), title, detail)));
-    }
-
     public static Errors single(Integer code, String title) {
         return new Errors(singletonList(new Error(code, title)));
     }
@@ -66,25 +62,17 @@ public class Errors {
         private final Integer code;
         private final Source source;
         private final String title;
-        private final String detail;
 
         public Error(@JsonProperty("code") Integer code,
                      @JsonProperty("source") Source source,
-                     @JsonProperty("title") String title,
-                     @JsonProperty("detail") String detail
-        ) {
+                     @JsonProperty("title") String title) {
             this.code = code;
             this.source = source;
             this.title = title;
-            this.detail = detail;
-        }
-
-        public Error(int code, Source source, String title) {
-            this(code, source, title, null);
         }
 
         public Error(int code, String title) {
-            this(code, null, title, null);
+            this(code, null, title);
         }
 
         public Integer getCode() {
@@ -97,10 +85,6 @@ public class Errors {
 
         public String getTitle() {
             return title;
-        }
-
-        public String getDetail() {
-            return detail;
         }
 
         public static class Source {

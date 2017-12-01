@@ -15,36 +15,61 @@
  */
 package com.github.tomakehurst.wiremock.core;
 
-import com.github.tomakehurst.wiremock.admin.AdminRoutes;
-import com.github.tomakehurst.wiremock.admin.LimitAndOffsetPaginator;
-import com.github.tomakehurst.wiremock.admin.model.*;
-import com.github.tomakehurst.wiremock.common.FileSource;
-import com.github.tomakehurst.wiremock.extension.*;
-import com.github.tomakehurst.wiremock.global.GlobalSettings;
-import com.github.tomakehurst.wiremock.global.GlobalSettingsHolder;
-import com.github.tomakehurst.wiremock.http.*;
-import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
-import com.github.tomakehurst.wiremock.matching.RequestPattern;
-import com.github.tomakehurst.wiremock.recording.*;
-import com.github.tomakehurst.wiremock.standalone.MappingsLoader;
-import com.github.tomakehurst.wiremock.stubbing.InMemoryStubMappings;
-import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import com.github.tomakehurst.wiremock.stubbing.StubMappings;
-import com.github.tomakehurst.wiremock.verification.*;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
+import static com.github.tomakehurst.wiremock.common.LocalNotifier.notifier;
+import static com.github.tomakehurst.wiremock.stubbing.ServeEvent.NOT_MATCHED;
+import static com.github.tomakehurst.wiremock.stubbing.ServeEvent.TO_LOGGED_REQUEST;
+import static com.google.common.collect.FluentIterable.from;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse;
-import static com.github.tomakehurst.wiremock.common.LocalNotifier.notifier;
-import static com.github.tomakehurst.wiremock.stubbing.ServeEvent.NOT_MATCHED;
-import static com.github.tomakehurst.wiremock.stubbing.ServeEvent.TO_LOGGED_REQUEST;
-import static com.google.common.collect.FluentIterable.from;
+import com.github.tomakehurst.wiremock.admin.AdminRoutes;
+import com.github.tomakehurst.wiremock.admin.LimitAndOffsetPaginator;
+import com.github.tomakehurst.wiremock.admin.model.GetScenariosResult;
+import com.github.tomakehurst.wiremock.admin.model.GetServeEventsResult;
+import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
+import com.github.tomakehurst.wiremock.admin.model.SingleServedStubResult;
+import com.github.tomakehurst.wiremock.admin.model.SingleStubMappingResult;
+import com.github.tomakehurst.wiremock.common.FileSource;
+import com.github.tomakehurst.wiremock.extension.AdminApiExtension;
+import com.github.tomakehurst.wiremock.extension.PostServeAction;
+import com.github.tomakehurst.wiremock.extension.ResponseDefinitionTransformer;
+import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
+import com.github.tomakehurst.wiremock.global.GlobalSettings;
+import com.github.tomakehurst.wiremock.global.GlobalSettingsHolder;
+import com.github.tomakehurst.wiremock.http.AdminRequestHandler;
+import com.github.tomakehurst.wiremock.http.BasicResponseRenderer;
+import com.github.tomakehurst.wiremock.http.ProxyResponseRenderer;
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.ResponseDefinition;
+import com.github.tomakehurst.wiremock.http.StubRequestHandler;
+import com.github.tomakehurst.wiremock.http.StubResponseRenderer;
+import com.github.tomakehurst.wiremock.matching.RequestMatcherExtension;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
+import com.github.tomakehurst.wiremock.recording.RecordSpec;
+import com.github.tomakehurst.wiremock.recording.RecordSpecBuilder;
+import com.github.tomakehurst.wiremock.recording.Recorder;
+import com.github.tomakehurst.wiremock.recording.RecordingStatusResult;
+import com.github.tomakehurst.wiremock.recording.SnapshotRecordResult;
+import com.github.tomakehurst.wiremock.standalone.MappingsLoader;
+import com.github.tomakehurst.wiremock.stubbing.InMemoryStubMappings;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.github.tomakehurst.wiremock.stubbing.StubMappings;
+import com.github.tomakehurst.wiremock.verification.DisabledRequestJournal;
+import com.github.tomakehurst.wiremock.verification.FindNearMissesResult;
+import com.github.tomakehurst.wiremock.verification.FindRequestsResult;
+import com.github.tomakehurst.wiremock.verification.InMemoryRequestJournal;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.github.tomakehurst.wiremock.verification.NearMiss;
+import com.github.tomakehurst.wiremock.verification.NearMissCalculator;
+import com.github.tomakehurst.wiremock.verification.RequestJournal;
+import com.github.tomakehurst.wiremock.verification.RequestJournalDisabledException;
+import com.github.tomakehurst.wiremock.verification.VerificationResult;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 
 public class WireMockApp implements StubServer, Admin {
 
@@ -180,42 +205,42 @@ public class WireMockApp implements StubServer, Admin {
     }
 
     @Override
-    public void addStubMapping(StubMapping stubMapping) {
-        stubMappings.addMapping(stubMapping);
+    public void addStubMapping(String context, StubMapping stubMapping) {
+        stubMappings.addMapping(context, stubMapping);
         if (stubMapping.shouldBePersisted()) {
             mappingsSaver.save(stubMapping);
         }
     }
 
     @Override
-    public void removeStubMapping(StubMapping stubMapping) {
-        stubMappings.removeMapping(stubMapping);
+    public void removeStubMapping(String context, StubMapping stubMapping) {
+        stubMappings.removeMapping(context, stubMapping);
         if (stubMapping.shouldBePersisted()) {
             mappingsSaver.remove(stubMapping);
         }
     }
 
     @Override
-    public void editStubMapping(StubMapping stubMapping) {
-        stubMappings.editMapping(stubMapping);
+    public void editStubMapping(String context, StubMapping stubMapping) {
+        stubMappings.editMapping(context, stubMapping);
         if (stubMapping.shouldBePersisted()) {
             mappingsSaver.save(stubMapping);
         }
     }
 
     @Override
-    public ListStubMappingsResult listAllStubMappings() {
-        return new ListStubMappingsResult(LimitAndOffsetPaginator.none(stubMappings.getAll()));
+    public ListStubMappingsResult listAllStubMappings(String context) {
+        return new ListStubMappingsResult(LimitAndOffsetPaginator.none(stubMappings.getAll(context)));
     }
 
     @Override
-    public SingleStubMappingResult getStubMapping(UUID id) {
-        return SingleStubMappingResult.fromOptional(stubMappings.get(id));
+    public SingleStubMappingResult getStubMapping(String context, UUID id) {
+        return SingleStubMappingResult.fromOptional(stubMappings.get(context, id));
     }
 
     @Override
-    public void saveMappings() {
-        mappingsSaver.save(stubMappings.getAll());
+    public void saveMappings(String context) {
+        mappingsSaver.save(stubMappings.getAll(context));
     }
 
     @Override

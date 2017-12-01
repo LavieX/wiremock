@@ -73,8 +73,8 @@ public class NearMissesRuleAcceptanceTest {
 
         @Test
         public void logsUnmatchedRequestsAtErrorWithNearMisses() throws Exception {
-            wm.stubFor(get(urlEqualTo("/near-miss")).willReturn(aResponse().withStatus(200)));
-            wm.stubFor(get(urlEqualTo("/miss")).willReturn(aResponse().withStatus(200)));
+            wm.stubFor("",get(urlEqualTo("/near-miss")).willReturn(aResponse().withStatus(200)));
+            wm.stubFor("",get(urlEqualTo("/miss")).willReturn(aResponse().withStatus(200)));
 
             client.post("/a-near-mis", new StringEntity(""));
 
@@ -174,7 +174,7 @@ public class NearMissesRuleAcceptanceTest {
 
         @Test
         public void successfullyCalculatesNearMissesWhenACustomMatcherIsRegistered() {
-            wm.stubFor(requestMatching("always-match").willReturn(aResponse()));
+            wm.stubFor("",requestMatching("always-match").willReturn(aResponse()));
 
             client.get("/");
 

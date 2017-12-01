@@ -69,9 +69,9 @@ public class SavingMappingsAcceptanceTest extends AcceptanceTestBase {
         assertThat(response.statusCode(), is(404));
 
         // Add a mapping and save it
-        stubFor(get(urlEqualTo("/some/url"))
+        stubFor("",get(urlEqualTo("/some/url"))
                 .willReturn(aResponse().withBody("Response to /some/url")));
-        saveAllMappings();
+        saveAllMappings("");
 
         // Reset, clearing in-memory mappings
         resetToDefault();
@@ -89,12 +89,12 @@ public class SavingMappingsAcceptanceTest extends AcceptanceTestBase {
         assertThat(response.statusCode(), is(404));
 
         // Add a mapping and save it
-        stubFor(get(urlEqualTo("/some/url"))
+        stubFor("",get(urlEqualTo("/some/url"))
                 .willReturn(aResponse().withBody("Response to /some/url")));
-        saveAllMappings();
+        saveAllMappings("");
 
         // Save a second time
-        saveAllMappings();
+        saveAllMappings("");
 
         // Check only one file has been written
         assertThat(MAPPINGS_DIRECTORY.listFiles().length, is(1));
@@ -107,13 +107,13 @@ public class SavingMappingsAcceptanceTest extends AcceptanceTestBase {
         assertThat(response.statusCode(), is(404));
 
         // Add a mapping and save it
-        stubFor(get(urlEqualTo("/some/url"))
+        stubFor("",get(urlEqualTo("/some/url"))
                 .willReturn(aResponse().withBody("Response to /some/url")));
-        saveAllMappings();
+        saveAllMappings("");
 
         // Reset to default to reload the just saved mappings, then save a second time
         resetToDefault();
-        saveAllMappings();
+        saveAllMappings("");
 
         // Check only one file has been written
         assertThat(MAPPINGS_DIRECTORY.listFiles().length, is(1));

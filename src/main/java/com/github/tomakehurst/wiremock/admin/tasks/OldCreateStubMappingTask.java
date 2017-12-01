@@ -15,6 +15,8 @@
  */
 package com.github.tomakehurst.wiremock.admin.tasks;
 
+import static com.github.tomakehurst.wiremock.admin.AdminRoutes.CONTEXT_PATHPARAM;
+
 import com.github.tomakehurst.wiremock.admin.AdminTask;
 import com.github.tomakehurst.wiremock.admin.model.PathParams;
 import com.github.tomakehurst.wiremock.core.Admin;
@@ -27,7 +29,7 @@ public class OldCreateStubMappingTask implements AdminTask {
     @Override
     public ResponseDefinition execute(Admin admin, Request request, PathParams pathParams) {
         StubMapping newMapping = StubMapping.buildFrom(request.getBodyAsString());
-        admin.addStubMapping(newMapping);
+        admin.addStubMapping(pathParams.get(CONTEXT_PATHPARAM),newMapping);
         return ResponseDefinition.created();
     }
 }

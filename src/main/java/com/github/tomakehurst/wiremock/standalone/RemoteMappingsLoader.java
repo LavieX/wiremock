@@ -48,7 +48,9 @@ public class RemoteMappingsLoader {
         for (TextFile mappingFile : mappingFiles) {
             StubMapping mapping = StubMapping.buildFrom(mappingFile.readContentsAsString());
             convertBodyFromFileIfNecessary(mapping);
-            wireMock.register(mapping);
+            
+            //TODO - probably need to save to a file in contexts
+            wireMock.register("",mapping);
         }
     }
 

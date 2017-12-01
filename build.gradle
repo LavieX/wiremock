@@ -29,7 +29,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 group = 'com.github.tomakehurst'
-version = '2.12.0'
+version = '2.11.0'
 
 def shouldPublishLocally = System.getProperty('LOCAL_PUBLISH')
 
@@ -347,18 +347,6 @@ task signAll {
     dependsOn signJars, signThinJar, signShadowJar, signThinJarPom, signStandaloneJarPom
 }
 
-task npmInstall(type: Exec) {
-    workingDir 'docs-v2'
-    commandLine 'npm', 'i'
-}
-
-task generateApiDocs(type: Exec) {
-    dependsOn npmInstall
-    workingDir 'docs-v2'
-    commandLine 'npm', 'run', 'apidocs'
-}
-jar.dependsOn generateApiDocs
-processResources.dependsOn generateApiDocs
 
 task deleteGeneratedApiDocs(type: Delete) {
     delete "src/main/resources/swagger"

@@ -81,7 +81,7 @@ public class JsonFileMappingsSource implements MappingsSource {
 		for (TextFile mappingFile: mappingFiles) {
             StubMapping mapping = StubMapping.buildFrom(mappingFile.readContentsAsString());
             mapping.setDirty(false);
-			stubMappings.addMapping(mapping);
+			stubMappings.addMapping("",mapping);
 			fileNameMap.put(mapping.getId(), mappingFile.getUri().getSchemeSpecificPart());
 		}
 	}

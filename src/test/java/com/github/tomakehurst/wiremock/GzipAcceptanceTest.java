@@ -32,7 +32,7 @@ public class GzipAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void servesGzippedResponseWhenRequested() throws Exception {
-        wireMockServer.stubFor(get(urlEqualTo("/gzip-response")).willReturn(aResponse().withBody("body text")));
+        wireMockServer.stubFor("",get(urlEqualTo("/gzip-response")).willReturn(aResponse().withBody("body text")));
 
         WireMockResponse response = testClient.get("/gzip-response", withHeader("Accept-Encoding", "gzip,deflate"));
         assertThat(response.firstHeader("Content-Encoding"), is("gzip"));
@@ -45,7 +45,7 @@ public class GzipAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void acceptsGzippedRequest() {
-        wireMockServer.stubFor(any(urlEqualTo("/gzip-request")).withRequestBody(equalTo("request body")).willReturn(aResponse().withBody("response body")));
+        wireMockServer.stubFor("",any(urlEqualTo("/gzip-request")).withRequestBody(equalTo("request body")).willReturn(aResponse().withBody("response body")));
 
         HttpEntity compressedBody = new GzipCompressingEntity(new StringEntity("request body", ContentType.TEXT_PLAIN));
         WireMockResponse response = testClient.post("/gzip-request", compressedBody);

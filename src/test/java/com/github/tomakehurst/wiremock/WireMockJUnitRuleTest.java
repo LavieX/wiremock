@@ -57,7 +57,7 @@ public class WireMockJUnitRuleTest {
 
         @Test
         public void canRegisterStubAndFetchOnCorrectPort() {
-            givenThat(get(urlEqualTo("/rule/test")).willReturn(aResponse().withBody("Rule test body")));
+            givenThat("",get(urlEqualTo("/rule/test")).willReturn(aResponse().withBody("Rule test body")));
 
             WireMockTestClient testClient = new WireMockTestClient(wireMockRule.port());
 
@@ -161,7 +161,7 @@ public class WireMockJUnitRuleTest {
         }
 
         private static void assertCanRegisterStubAndFetchOnCorrectPort(WireMockClassRule wireMockRule) {
-            wireMockRule.givenThat(get(urlEqualTo("/rule/test")).willReturn(aResponse().withBody("Rule test body")));
+            wireMockRule.givenThat("",get(urlEqualTo("/rule/test")).willReturn(aResponse().withBody("Rule test body")));
 
             WireMockTestClient testClient = new WireMockTestClient(wireMockRule.port());
 
@@ -247,7 +247,7 @@ public class WireMockJUnitRuleTest {
         }
 
         private void setupStubbing(Stubbing stubbing, String body) {
-            stubbing.stubFor(get(urlEqualTo("/test")).willReturn(aResponse().withBody(body)));
+            stubbing.stubFor("",get(urlEqualTo("/test")).willReturn(aResponse().withBody(body)));
         }
 
         private void stubIsCalledAndResponseIsCorrect(Stubbing stubbing, int port, String expectedText) {
@@ -271,7 +271,7 @@ public class WireMockJUnitRuleTest {
                     urls.add(request.getUrl());
                 }
             });
-            wireMockRule.stubFor(get(urlEqualTo("/test/listener")).willReturn(aResponse().withBody("Listener")));
+            wireMockRule.stubFor("",get(urlEqualTo("/test/listener")).willReturn(aResponse().withBody("Listener")));
 
             WireMockTestClient testClient = new WireMockTestClient(wireMockRule.port());
             assertThat(testClient.get("/test/listener").content(), is("Listener"));
@@ -285,7 +285,7 @@ public class WireMockJUnitRuleTest {
     }
 
     public static void assertCanRegisterStubAndFetchOnCorrectPort(int port) {
-        givenThat(get(urlEqualTo("/rule/test")).willReturn(aResponse().withBody("Rule test body")));
+        givenThat("",get(urlEqualTo("/rule/test")).willReturn(aResponse().withBody("Rule test body")));
 
         WireMockTestClient testClient = new WireMockTestClient(port);
 

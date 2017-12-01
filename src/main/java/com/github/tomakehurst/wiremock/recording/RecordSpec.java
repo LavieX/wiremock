@@ -27,7 +27,7 @@ import java.util.Map;
  * Encapsulates options for generating and outputting StubMappings
  */
 public class RecordSpec {
-
+	
     // Target URL when using the recording API. Not applicable to snapshotting
     private final String targetBaseUrl;
 

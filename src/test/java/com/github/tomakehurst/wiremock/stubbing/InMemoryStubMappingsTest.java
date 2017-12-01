@@ -44,14 +44,14 @@ public class InMemoryStubMappingsTest {
 	public void testEditMapping() throws Exception {
 
 		StubMapping existingMapping = aMapping(1, "/priority1/1");
-		inMemoryStubMappings.addMapping(existingMapping);
+		inMemoryStubMappings.addMapping("", existingMapping);
 
 		StubMapping newMapping = aMapping(1, "/priority1/2");
 		newMapping.setUuid(existingMapping.getUuid());
 
-		inMemoryStubMappings.editMapping(newMapping);
+		inMemoryStubMappings.editMapping("", newMapping);
 
-		List<StubMapping> allMappings = inMemoryStubMappings.getAll();
+		List<StubMapping> allMappings = inMemoryStubMappings.getAll("");
 
 		assertThat(allMappings, hasSize(1));
 		assertThat(allMappings.get(0), is(newMapping));
@@ -60,34 +60,34 @@ public class InMemoryStubMappingsTest {
 	@Test
 	public void testRemoveMapping() throws Exception{
 
-		List<StubMapping> allMappings = inMemoryStubMappings.getAll();
+		List<StubMapping> allMappings = inMemoryStubMappings.getAll("");
 		assertThat(allMappings,hasSize(0));
 
 		StubMapping existingMapping = aMapping(1,"priority1/1");
-		inMemoryStubMappings.addMapping(existingMapping);
+		inMemoryStubMappings.addMapping("", existingMapping);
 		existingMapping = aMapping(2,"priority2/2");
 		StubMapping mappingToRemove = existingMapping;
-		inMemoryStubMappings.addMapping(existingMapping);
+		inMemoryStubMappings.addMapping("", existingMapping);
 		existingMapping = aMapping(3,"priority3/3");
-		inMemoryStubMappings.addMapping(existingMapping);
-		allMappings = inMemoryStubMappings.getAll();
+		inMemoryStubMappings.addMapping("", existingMapping);
+		allMappings = inMemoryStubMappings.getAll("");
 		assertThat(allMappings,hasSize(3));
 
-		inMemoryStubMappings.removeMapping(mappingToRemove);
+		inMemoryStubMappings.removeMapping("", mappingToRemove);
 
-		allMappings = inMemoryStubMappings.getAll();
+		allMappings = inMemoryStubMappings.getAll("");
 		assertThat(allMappings,hasSize(2));
 	}
 	@Test
 	public void testEditMappingNotPresent() throws Exception {
 
 		StubMapping existingMapping = aMapping(1, "/priority1/1");
-		inMemoryStubMappings.addMapping(existingMapping);
+		inMemoryStubMappings.addMapping("", existingMapping);
 
 		StubMapping newMapping = aMapping(1, "/priority1/2");
 
 		try {
-			inMemoryStubMappings.editMapping(newMapping);
+			inMemoryStubMappings.editMapping("", newMapping);
 			fail("Expected Exception");
 		} catch (RuntimeException e) {
 			assertThat(e.getMessage(), containsString(newMapping.getUuid().toString()));

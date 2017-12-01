@@ -54,14 +54,14 @@ public class BrowserProxyAcceptanceTest {
 
     @Test
     public void canProxyHttp() {
-        target.stubFor(get(urlEqualTo("/whatever")).willReturn(aResponse().withBody("Got it")));
+        target.stubFor("", get(urlEqualTo("/whatever")).willReturn(aResponse().withBody("Got it")));
 
         assertThat(testClient.getViaProxy(url("/whatever"), proxy.port()).content(), is("Got it"));
     }
 
     @Test
     public void passesQueryParameters() {
-        target.stubFor(get(urlEqualTo("/search?q=things&limit=10")).willReturn(aResponse().withStatus(200)));
+        target.stubFor("", get(urlEqualTo("/search?q=things&limit=10")).willReturn(aResponse().withStatus(200)));
 
         assertThat(testClient.getViaProxy(url("/search?q=things&limit=10"), proxy.port()).statusCode(), is(200));
     }

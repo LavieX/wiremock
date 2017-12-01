@@ -59,7 +59,7 @@ public class OldEditStubMappingTaskTest {
 		context.checking(new Expectations() {{
 			oneOf(mockRequest).getBodyAsString();
 			will(returnValue(buildJsonStringFor(MOCK_MAPPING)));
-			oneOf(mockAdmin).editStubMapping(with(any(StubMapping.class)));
+			oneOf(mockAdmin).editStubMapping("",with(any(StubMapping.class)));
 		}});
 
 		editStubMappingTask.execute(mockAdmin, mockRequest, PathParams.empty());
@@ -71,7 +71,7 @@ public class OldEditStubMappingTaskTest {
 		context.checking(new Expectations() {{
 			oneOf(mockRequest).getBodyAsString();
 			will(returnValue(buildJsonStringFor(MOCK_MAPPING)));
-			oneOf(mockAdmin).editStubMapping(with(any(StubMapping.class)));
+			oneOf(mockAdmin).editStubMapping("",with(any(StubMapping.class)));
 		}});
 
 		ResponseDefinition response = editStubMappingTask.execute(mockAdmin, mockRequest, PathParams.empty());

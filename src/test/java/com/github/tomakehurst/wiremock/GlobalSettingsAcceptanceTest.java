@@ -28,7 +28,7 @@ public class GlobalSettingsAcceptanceTest extends AcceptanceTestBase {
 	@Test
 	public void settingGlobalFixedResponseDelay() {
 		WireMock.setGlobalFixedDelay(500);
-		givenThat(get(urlEqualTo("/globally/delayed/resource")).willReturn(aResponse().withStatus(200)));
+		givenThat("",get(urlEqualTo("/globally/delayed/resource")).willReturn(aResponse().withStatus(200)));
         
 	    long start = System.currentTimeMillis();
         testClient.get("/globally/delayed/resource");
@@ -40,7 +40,7 @@ public class GlobalSettingsAcceptanceTest extends AcceptanceTestBase {
 	@Test
 	public void settingGlobalRandomDistributionDelayCausesADelay() {
 		WireMock.setGlobalRandomDelay(new LogNormal(90, 0.1));
-		givenThat(get(urlEqualTo("/globally/random/delayed/resource")).willReturn(aResponse().withStatus(200)));
+		givenThat("",get(urlEqualTo("/globally/random/delayed/resource")).willReturn(aResponse().withStatus(200)));
 
 		long start = System.currentTimeMillis();
 		testClient.get("/globally/random/delayed/resource");
@@ -53,7 +53,7 @@ public class GlobalSettingsAcceptanceTest extends AcceptanceTestBase {
 	public void canCombineFixedAndRandomDelays() {
 		WireMock.setGlobalRandomDelay(new LogNormal(90, 0.1));
 		WireMock.setGlobalFixedDelay(30);
-		givenThat(get(urlEqualTo("/globally/random/delayed/resource")).willReturn(aResponse().withStatus(200)));
+		givenThat("",get(urlEqualTo("/globally/random/delayed/resource")).willReturn(aResponse().withStatus(200)));
 
 		long start = System.currentTimeMillis();
 		testClient.get("/globally/random/delayed/resource");

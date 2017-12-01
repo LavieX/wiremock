@@ -15,6 +15,7 @@
  */
 package com.github.tomakehurst.wiremock.admin.tasks;
 
+import com.github.tomakehurst.wiremock.admin.AdminRoutes;
 import com.github.tomakehurst.wiremock.admin.AdminTask;
 import com.github.tomakehurst.wiremock.admin.LimitAndOffsetPaginator;
 import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
@@ -29,7 +30,7 @@ public class GetAllStubMappingsTask implements AdminTask {
     @Override
     public ResponseDefinition execute(Admin admin, Request request, PathParams pathParams) {
         ListStubMappingsResult result = new ListStubMappingsResult(
-            LimitAndOffsetPaginator.fromRequest(admin.listAllStubMappings().getMappings(), request)
+            LimitAndOffsetPaginator.fromRequest(admin.listAllStubMappings(pathParams.get(AdminRoutes.CONTEXT_PATHPARAM)).getMappings(), request)
         );
 
         return ResponseDefinitionBuilder.jsonResponse(result);

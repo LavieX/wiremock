@@ -15,6 +15,10 @@
  */
 package com.github.tomakehurst.wiremock.admin.tasks;
 
+import static com.github.tomakehurst.wiremock.admin.AdminRoutes.CONTEXT_PATHPARAM;
+
+import java.util.UUID;
+
 import com.github.tomakehurst.wiremock.admin.AdminTask;
 import com.github.tomakehurst.wiremock.admin.model.PathParams;
 import com.github.tomakehurst.wiremock.admin.model.SingleStubMappingResult;
@@ -23,22 +27,20 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
-import java.util.UUID;
-
 public class EditStubMappingTask implements AdminTask {
 
     @Override
     public ResponseDefinition execute(Admin admin, Request request, PathParams pathParams) {
         StubMapping newStubMapping = StubMapping.buildFrom(request.getBodyAsString());
         UUID id = UUID.fromString(pathParams.get("id"));
-        SingleStubMappingResult stubMappingResult = admin.getStubMapping(id);
+        SingleStubMappingResult stubMappingResult = admin.getStubMapping(pathParams.get(CONTEXT_PATHPARAM), id);
         if (!stubMappingResult.isPresent()) {
             return ResponseDefinition.notFound();
         }
 
         newStubMapping.setId(id);
 
-        admin.editStubMapping(newStubMapping);
+        admin.editStubMapping(pathParams.get(CONTEXT_PATHPARAM), newStubMapping);
         return ResponseDefinition.okForJson(newStubMapping);
     }
 }

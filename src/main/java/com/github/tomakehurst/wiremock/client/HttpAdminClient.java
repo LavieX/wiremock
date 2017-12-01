@@ -124,7 +124,7 @@ public class HttpAdminClient implements Admin {
     }
 
     @Override
-    public void addStubMapping(StubMapping stubMapping) {
+    public void addStubMapping(String context, StubMapping stubMapping) {
         if (stubMapping.getRequest().hasCustomMatcher()) {
             throw new AdminException("Custom matchers can't be used when administering a remote WireMock server. " +
                     "Use WireMockRule.stubFor() or WireMockServer.stubFor() to administer the local instance.");
@@ -139,21 +139,21 @@ public class HttpAdminClient implements Admin {
     }
 
     @Override
-    public void editStubMapping(StubMapping stubMapping) {
+    public void editStubMapping(String context, StubMapping stubMapping) {
         postJsonAssertOkAndReturnBody(
                 urlFor(OldEditStubMappingTask.class),
                 Json.write(stubMapping));
     }
 
     @Override
-    public void removeStubMapping(StubMapping stubbMapping) {
+    public void removeStubMapping(String context, StubMapping stubbMapping) {
         postJsonAssertOkAndReturnBody(
                 urlFor(OldRemoveStubMappingTask.class),
                 Json.write(stubbMapping));
     }
 
     @Override
-    public ListStubMappingsResult listAllStubMappings() {
+    public ListStubMappingsResult listAllStubMappings(String context) {
         return executeRequest(
                 adminRoutes.requestSpecForTask(GetAllStubMappingsTask.class),
                 ListStubMappingsResult.class
@@ -162,7 +162,7 @@ public class HttpAdminClient implements Admin {
 
     @Override
     @SuppressWarnings("unchecked")
-    public SingleStubMappingResult getStubMapping(UUID id) {
+    public SingleStubMappingResult getStubMapping(String context, UUID id) {
         return executeRequest(
                 adminRoutes.requestSpecForTask(GetStubMappingTask.class),
                 PathParams.single("id", id),
@@ -171,7 +171,7 @@ public class HttpAdminClient implements Admin {
     }
 
     @Override
-    public void saveMappings() {
+    public void saveMappings(String context) {
         postJsonAssertOkAndReturnBody(urlFor(SaveMappingsTask.class), null);
     }
 

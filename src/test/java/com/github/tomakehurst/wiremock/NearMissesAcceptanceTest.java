@@ -32,11 +32,11 @@ public class NearMissesAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void nearMisses() {
-        stubFor(get(urlEqualTo("/mypath")).withHeader("My-Header", equalTo("matched"))
+        stubFor("",get(urlEqualTo("/mypath")).withHeader("My-Header", equalTo("matched"))
             .willReturn(aResponse().withStatus(200)));
-        stubFor(get(urlEqualTo("/otherpath")).withHeader("My-Header", equalTo("otherheaderval"))
+        stubFor("",get(urlEqualTo("/otherpath")).withHeader("My-Header", equalTo("otherheaderval"))
             .willReturn(aResponse().withStatus(200)));
-        stubFor(get(urlEqualTo("/yet/another/path")).withHeader("X-Alt-Header", equalTo("matchonthis"))
+        stubFor("",get(urlEqualTo("/yet/another/path")).withHeader("X-Alt-Header", equalTo("matchonthis"))
             .willReturn(aResponse().withStatus(200)));
 
         testClient.get("/otherpath", withHeader("My-Header", "notmatched"));
@@ -54,7 +54,7 @@ public class NearMissesAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void returnsAllUnmatchedRequests() {
-        stubFor(get(urlEqualTo("/mypath")).withHeader("My-Header", equalTo("matched"))
+        stubFor("",get(urlEqualTo("/mypath")).withHeader("My-Header", equalTo("matched"))
             .willReturn(aResponse().withStatus(200)));
 
         testClient.get("/unmatched/path");
@@ -67,11 +67,11 @@ public class NearMissesAcceptanceTest extends AcceptanceTestBase {
 
     @Test
     public void returnsStubMappingNearMissesForARequest() {
-        stubFor(get(urlEqualTo("/mypath")).withHeader("My-Header", equalTo("matched"))
+        stubFor("",get(urlEqualTo("/mypath")).withHeader("My-Header", equalTo("matched"))
             .willReturn(aResponse().withStatus(200)));
-        stubFor(get(urlEqualTo("/otherpath")).withHeader("My-Header", equalTo("otherheaderval"))
+        stubFor("",get(urlEqualTo("/otherpath")).withHeader("My-Header", equalTo("otherheaderval"))
             .willReturn(aResponse().withStatus(200)));
-        stubFor(get(urlEqualTo("/yet/another/path")).withHeader("X-Alt-Header", equalTo("matchonthis"))
+        stubFor("",get(urlEqualTo("/yet/another/path")).withHeader("X-Alt-Header", equalTo("matchonthis"))
             .willReturn(aResponse().withStatus(200)));
 
         List<NearMiss> nearMisses = WireMock.findNearMissesFor(LoggedRequest.createFrom(
